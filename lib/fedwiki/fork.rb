@@ -70,11 +70,13 @@ module FedWiki
       slug = url.slug
 
       if options[:username]
-        username = options[:username].parameterize
-        topic = options[:topic].empty? ? url_chunks.first : options[:topic].parameterize
+        username = options[:username].slug
+        topic = options[:topic].empty? ? url_chunks.first : options[:topic].slug
         subdomain = "#{topic}.#{username}"
       else
-        subdomain = "#{origin_domain}.on"
+        connector = options[:domain_connector] || 'on'
+        origin = options[:shorten_origin_domain] ? url_chunks.first : url_chunks.join
+        subdomain = "#{origin}.#{connector}"
       end
 
       sfw_site = "#{subdomain}.#{ENV['SFW_BASE_DOMAIN']}"
