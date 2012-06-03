@@ -89,5 +89,6 @@
       %a{:href => "http://octopress.org"} Octopress
 
   /
-    ENV['RACK_ENV'] = #{ENV['RACK_ENV']}
-    Rails.env = #{Rails.env}
+    ENV['RACK_ENV'] = #{ENV['RACK_ENV'].inspect}
+    Rails.env = #{Rails.env.inspect}
+    ENV['CREATE_PAGES'] = #{ENV['CREATE_PAGES'].inspect}
