@@ -22,12 +22,15 @@
   %header{:role => "banner"}
     %hgroup
       %h1
-        %a{:href => "/"} Open Your Project
-        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-        %span.message
-          Shhh... we're in private collabogeek alpha, please tell only the right people...
+        %a{:href => "/"}
+          = ENV['SITE_NAME']
+        - if ENV['APP_SUBDOMAIN'] == 'alpha'
+          &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          %span.message
+            Shhh... we're in private collabogeek alpha, please tell only the right people...
       %h2
-        Collaborative sharing for social change projects
+        = ENV['SITE_TAGLINE']
+
   %nav{:role => "navigation"}
     -#%form{:action => "http://google.com/search", :method => "get"}
     -#  %fieldset{:role => "search"}
