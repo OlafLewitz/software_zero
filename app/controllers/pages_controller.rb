@@ -2,18 +2,13 @@ require 'fedwiki/fork'
 
 class PagesController < ApplicationController
   def new
-    if request.host.match /^#{ENV['APP_SUBDOMAIN']}\./
-      page_attrs = {
-        :url => 'http://en.wikipedia.org/wiki/Technological_singularity',
-        :username => 'John Q. Public',
-        :topic => 'Singularity',
-      } if CONFIG.form_pre_filled
-      @page = Page.new(page_attrs || {})
-    else
-      #port_suffix = request.port == 80 ? '' : ":#{request.port}"
-      #redirect "#{request.scheme}://#{APP_SUBDOMAIN}.#{request.host}#{port_suffix}"
-      redirect_to "http://enlightenedstructure.org/Software_Zero/"
-    end
+    page_attrs = CONFIG.form_pre_filled ? {
+      :url => 'http://en.wikipedia.org/wiki/Technological_singularity',
+      :username => 'John Q. Public',
+      :topic => 'Singularity',
+    } : {}
+
+    @page = Page.new page_attrs
   end
 
   def create
