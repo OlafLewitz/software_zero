@@ -24,10 +24,10 @@
       %h1
         %a{:href => "/"}
           = ENV['SITE_NAME']
-        - if ENV['APP_SUBDOMAIN'] == 'alpha'
+        - if ENV['SITE_MESSAGE']
           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
           %span.message
-            Shhh... we're in private collabogeek alpha, please tell only the right people...
+            = ENV['SITE_MESSAGE']
       %h2
         = ENV['SITE_TAGLINE']
 

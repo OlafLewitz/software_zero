@@ -9,8 +9,7 @@ Running a rails server
 
     bundle exec foreman run "rails server -p 2222"
 
-Look for your app here: http://www.lvh.me:2222/
-(if you change APP_SUBDOMAIN in .env, use the value of that instead of www)
+Look for your app here: http://localhost:2222/
 
 Running a rails console
 -----------------------
