@@ -67,9 +67,9 @@ module OpenYourProject
 
     ### APPLICATION LOGIC:
 
-    #raise("Please set env var APP_SUBDOMAIN")   unless ENV['APP_SUBDOMAIN']
-    #raise("Please set env var SFW_BASE_DOMAIN") unless ENV['SFW_BASE_DOMAIN']
-    #raise("Please set env var SECRET_TOKEN")    unless ENV['SECRET_TOKEN']
+    #raise("Please set env var APP_SUBDOMAIN")   unless Env['APP_SUBDOMAIN']
+    #raise("Please set env var SFW_BASE_DOMAIN") unless Env['SFW_BASE_DOMAIN']
+    #raise("Please set env var SECRET_TOKEN")    unless Env['SECRET_TOKEN']
 
     config.form_pre_filled = false
 

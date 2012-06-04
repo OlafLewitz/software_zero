@@ -23,13 +23,13 @@
     %hgroup
       %h1
         %a{:href => "/"}
-          = ENV['SITE_NAME']
-        - if ENV['SITE_MESSAGE']
+          = Env['SITE_NAME']
+        - if Env['SITE_MESSAGE']
           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
           %span.message
-            = ENV['SITE_MESSAGE']
+            = Env['SITE_MESSAGE']
       %h2
-        = ENV['SITE_TAGLINE']
+        = Env['SITE_TAGLINE']
 
   %nav{:role => "navigation"}
     -#%form{:action => "http://google.com/search", :method => "get"}
@@ -37,7 +37,7 @@
     -#    %input{:name => "q", :type => "hidden", :value => "site:openyourproject.org"}/
     -#    %input.search{:name => "q", :placeholder => "Search", :results => "0", :type => "text"}/
     %ul.main-navigation
-      - if ENV['CREATE_PAGES']
+      - if Env['CREATE_PAGES']
         %li
           %a{:href => "/"} Open Now
         %li
@@ -92,6 +92,7 @@
       %a{:href => "http://octopress.org"} Octopress
 
   /
-    ENV['RACK_ENV'] = #{ENV['RACK_ENV'].inspect}
+    Env['RACK_ENV'] = #{Env['RACK_ENV'].inspect}
     Rails.env = #{Rails.env.inspect}
-    ENV['CREATE_PAGES'] = #{ENV['CREATE_PAGES'].inspect}
+    Env['CREATE_PAGES'] = #{Env['CREATE_PAGES'].inspect}
+    Env['REDIRECT_TO_WWW'] = #{Env['REDIRECT_TO_WWW'].inspect}
