@@ -57,7 +57,11 @@ def crawl(starting_url)
 end
 
 def fedwiki_open(doc, url)
-  FedWiki.open(doc, url, :domain_connector => ENV['DOMAIN_CONNECTOR'], :shorten_origin_domain => ENV['SHORTEN_ORIGIN_DOMAIN'])
+  FedWiki.open(
+    doc, url,
+    :domain_connector => ENV['DOMAIN_CONNECTOR'],
+    :shorten_origin_domain => ENV['SHORTEN_ORIGIN_DOMAIN']
+  )
 end
 
 ### The action: read args and crawl --
