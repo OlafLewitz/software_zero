@@ -3,9 +3,9 @@ class Env
     def [](key)
       value = ENV[key]
       case value
-        when 'false'
-          false
         when 'true'
+          true
+        when 'false'
           false
         else
           value
