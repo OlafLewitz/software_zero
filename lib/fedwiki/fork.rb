@@ -20,6 +20,22 @@ module FedWiki
   SFW_BASE_DOMAIN = Env['SFW_BASE_DOMAIN'] || raise("please set the environment variable SFW_BASE_DOMAIN")
 
   class << self
+    def open_site(data)
+      urls = data.keys
+      data.each do |url, doc|
+        sleep rand*4
+        begin
+          if fork_url = open(doc, url, :site_urls => urls)
+            puts "Created fedwiki page -->"
+            puts
+            puts fork_url
+          end
+        rescue FedWiki::NoKnownOpenLicense
+          print "no known open license"
+        end
+      end
+    end
+
     def open(doc, url, options={})
       puts
       print "    ... Trying #{url} ... "
@@ -32,11 +48,11 @@ module FedWiki
       html = doc.to_s
 
       metadata = Pismo::Document.new(html) rescue nil  # pismo occasionally crashes, eg on invalid UTF8
-                                           # for a list of metadata properties, see https://github.com/peterc/pismo
-                                           # To limit keywords to specific items we care about, consider this doc fragment --
-                                           #   New! The keywords method accepts optional arguments. These are the current defaults:
-                                           #   :stem_at => 20, :word_length_limit => 15, :limit => 20, :remove_stopwords => true, :minimum_score => 2
-                                           #   You can also pass an array to keywords with :hints => arr if you want only words of your choosing to be found.
+                 # for a list of metadata properties, see https://github.com/peterc/pismo
+                 # To limit keywords to specific items we care about, consider this doc fragment --
+                 #   New! The keywords method accepts optional arguments. These are the current defaults:
+                 #   :stem_at => 20, :word_length_limit => 15, :limit => 20, :remove_stopwords => true, :minimum_score => 2
+                 #   You can also pass an array to keywords with :hints => arr if you want only words of your choosing to be found.
 
       return if html.empty? || !metadata || url =~ /%23/ # whats up with %23?
 
@@ -83,16 +99,20 @@ module FedWiki
       sfw_site = "#{subdomain}.#{Env['SFW_BASE_DOMAIN']}"
       sfw_action_url = "http://#{sfw_site}/page/#{slug}/action"
 
-      doc = Nokogiri::HTML.fragment(html)
-      links = doc / 'a'
-      links.each do |link|
-        if match = link['href'].to_s.match(%r[.+?#{origin_domain}(?::\d+)?(?<href_path>/.*)$])
-          link_slug = match['href_path'].slug
-          link['href'] = link_slug
-          link['class'] = "#{link['class']} fedwiki-internal".strip # the class is for later client-side processing
+      if (site_urls = options[:site_urls])
+        doc = Nokogiri::HTML.fragment(html)
+        links = doc / 'a'
+        links.each do |link|
+          if match = link['href'].to_s.match(%r[^.+?#{origin_domain}(?::\d+)?(?<href_path>/.*)$])
+            if site_urls.include?(match[0])
+              link_slug = match['href_path'].slug
+              link['href'] = link_slug
+              link['class'] = "#{link['class']} fedwiki-internal".strip # the class is for later client-side processing
+            end
+          end
         end
+        html = doc.to_html
       end
-      html = doc.to_html
 
       html.strip_lines!
       html_chunks = html.split(/\n{2,}/)

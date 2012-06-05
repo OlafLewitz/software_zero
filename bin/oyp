@@ -21,41 +21,41 @@ require File.expand_path("../lib/env", File.dirname(__FILE__))
 
 MAX_LINKS_PER_SITE = (Env['MAX_LINKS_PER_SITE'] || 2).to_i
 
+def run
+  raise "Please set the environment variable 'SFW_BASE_DOMAIN'" if Env['SFW_BASE_DOMAIN'].nil? || Env['SFW_BASE_DOMAIN'].empty?
+  url = ARGV.first
+  if url
+    url = url =~ %r{^https?://} ? url : "http://#{url}"
+    crawl url
+  else
+    File.readlines('links.txt').each do |line|
+      url = line.strip
+      crawl url unless url.empty?
+    end
+  end
+end
+
 def crawl(starting_url)
   html = RestClient.get starting_url rescue nil
   doc = Nokogiri::HTML(html)
-  if html && (fork_url = fedwiki_open(doc, starting_url))
-    puts "Created fedwiki page -->"
-    puts
-    puts fork_url
-    visited = [starting_url]
-    attempted = 0
+  if html && !FedWiki.open_license_links(doc).empty?
+    visited = {starting_url => doc}
+    attempted = 1
     Anemone.crawl(starting_url) do |anemone|
-      #anemone.focus_crawl { |page| page.links.slice(0...MAX_LINKS_PER_SITE) }
       anemone.on_every_page do |page|
         url = page.url.to_s
-        unless visited.include?(url)
-          #puts '~'*20
-          # Note: Anemone runs 4 threads by default
-          #sleep rand*16
-          sleep rand*8
-          doc = page.doc
-          begin
-            if fork_url = fedwiki_open(doc, url)
-              puts "Created fedwiki page -->"
-              puts
-              puts fork_url
-              visited << url
-            end
-          rescue FedWiki::NoKnownOpenLicense
-            print "no known open license"
-          end
-        end
+        visited[url] = page.doc  # TODO: if response 200
         attempted += 1
-        return if (visited.size >= MAX_LINKS_PER_SITE) || (attempted >= MAX_LINKS_PER_SITE * 2)
+        if (visited.keys.size >= MAX_LINKS_PER_SITE) || (attempted >= MAX_LINKS_PER_SITE * 3)
+          FedWiki.open_site(visited)
+          return
+        end
+        #sleep rand*8
       end
     end
+    FedWiki.open_site(visited)
   end
+  puts
 end
 
 def fedwiki_open(doc, url)
@@ -66,17 +66,5 @@ def fedwiki_open(doc, url)
   )
 end
 
-### The action: read args and crawl --
 
-raise "Please set the environment variable 'SFW_BASE_DOMAIN'" if Env['SFW_BASE_DOMAIN'].nil? || Env['SFW_BASE_DOMAIN'].empty?
-
-url = ARGV.first
-if url
-  url = url =~ %r{^https?://} ? url : "http://#{url}"
-  crawl url
-else
-  File.readlines('links.txt').each do |line|
-    url = line.strip
-    crawl url unless url.empty?
-  end
-end
+run()
