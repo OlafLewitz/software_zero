@@ -15,9 +15,11 @@
 require 'anemone'
 require 'json'
 
-Dir[File.expand_path("../lib/**/*.rb", File.dirname(__FILE__))].each { |lib| require lib }
+Dir[File.expand_path("../lib/fedwiki/*.rb", File.dirname(__FILE__))].each { |lib| require lib }
+require File.expand_path("../lib/env", File.dirname(__FILE__))
 
-MAX_LINKS_PER_SITE = (ENV['MAX_LINKS_PER_SITE'] || 2).to_i
+
+MAX_LINKS_PER_SITE = (Env['MAX_LINKS_PER_SITE'] || 2).to_i
 
 def crawl(starting_url)
   html = RestClient.get starting_url rescue nil
@@ -59,14 +61,14 @@ end
 def fedwiki_open(doc, url)
   FedWiki.open(
     doc, url,
-    :domain_connector => ENV['DOMAIN_CONNECTOR'],
-    :shorten_origin_domain => ENV['SHORTEN_ORIGIN_DOMAIN']
+    :domain_connector => Env['DOMAIN_CONNECTOR'],
+    :shorten_origin_domain => Env['SHORTEN_ORIGIN_DOMAIN']
   )
 end
 
 ### The action: read args and crawl --
 
-raise "Please set the environment variable 'SFW_BASE_DOMAIN'" if ENV['SFW_BASE_DOMAIN'].nil? || ENV['SFW_BASE_DOMAIN'].empty?
+raise "Please set the environment variable 'SFW_BASE_DOMAIN'" if Env['SFW_BASE_DOMAIN'].nil? || Env['SFW_BASE_DOMAIN'].empty?
 
 url = ARGV.first
 if url

@@ -1,4 +1,4 @@
-class Env
+class ::Env
   class << self
     def [](key)
       value = ENV[key]

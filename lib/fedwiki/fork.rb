@@ -3,6 +3,7 @@ require 'html_massage'
 require 'rest_client'
 
 require_relative 'random_id'
+require_relative '../env'
 require_relative '../../config/initializers/string'
 
 module FedWiki
@@ -16,7 +17,7 @@ module FedWiki
     creativecommons.org/licenses
   ]
 
-  SFW_BASE_DOMAIN = ENV['SFW_BASE_DOMAIN'] || raise("please set the environment variable SFW_BASE_DOMAIN")
+  SFW_BASE_DOMAIN = Env['SFW_BASE_DOMAIN'] || raise("please set the environment variable SFW_BASE_DOMAIN")
 
   class << self
     def open(doc, url, options={})
@@ -79,7 +80,7 @@ module FedWiki
         subdomain = "#{origin}.#{connector}"
       end
 
-      sfw_site = "#{subdomain}.#{ENV['SFW_BASE_DOMAIN']}"
+      sfw_site = "#{subdomain}.#{Env['SFW_BASE_DOMAIN']}"
       sfw_action_url = "http://#{sfw_site}/page/#{slug}/action"
 
       doc = Nokogiri::HTML.fragment(html)
