@@ -126,8 +126,8 @@ module FedWiki
           ],
           :attributes => {
             :all => [],
-            :a => %w[ href ],
-            :img => %w[ src alt ],
+            'a' => %w[ href ],
+            'img' => %w[ src alt ],
           }
       )
       begin
