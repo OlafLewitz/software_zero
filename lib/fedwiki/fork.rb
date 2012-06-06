@@ -4,6 +4,7 @@ require 'rest_client'
 
 require_relative 'random_id'
 require_relative '../env'
+require_relative '../core-ext/nil'
 require_relative '../../config/initializers/string'
 
 module FedWiki
@@ -104,6 +105,7 @@ module FedWiki
       #############
 
       html = massage_html(html, url)
+      html = remove_first_h1_if_same_as_title(html, title)
       html = convert_links_to_crawled_pages_to_wikilinks(html, origin_domain, options[:site_urls])
       html.strip_lines!
       html_chunks = html.split(/\n{2,}/)
@@ -127,6 +129,7 @@ module FedWiki
       end
 
       fork_url = "http://#{sfw_site}/view/#{slug}"
+      fork_url
     end
 
     def massage_html(html, url)
@@ -165,17 +168,27 @@ module FedWiki
     end
 
     def extract_title(doc)
-      %w[ div.title div.h0 h1 title ].each do |selector|
+      %w[ h1 title .title ].each do |selector|
         if ( title_elements = doc.search( selector ) ).length == 1
-          title = title_elements.first.content.split( /\s+(-|\|)/ ).first.to_s.strip
+          title = massage_title(title_elements.first.content)
           return title unless title.empty?
         end
       end
       nil
     end
 
+    def massage_title(title)
+      title.split( /\s+(-|\|)/ ).first.to_s.strip
+    end
+
+    def remove_first_h1_if_same_as_title(html, title)
+      doc = Nokogiri::HTML.fragment(html)
+      h1.remove if (h1 = (doc / :h1).first) && massage_title(h1.content) == massage_title(title)
+      doc.to_s
+    end
+
     def convert_links_to_crawled_pages_to_wikilinks(html, origin_domain, site_urls)
-      return unless site_urls
+      return if site_urls.empty?
       doc = Nokogiri::HTML.fragment(html)
       links = doc / 'a'
       links.each do |link|
