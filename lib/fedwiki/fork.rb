@@ -56,23 +56,7 @@ module FedWiki
 
       return if html.empty? || !metadata || url =~ /%23/ # whats up with %23?
 
-      title = extract_title(doc) || metadata.title
-      keywords = metadata.keywords.map(&:first)
-
-      sfw_page_data = {
-        'title' => title,
-        'keywords' => keywords,
-        'license_links' => license_links,
-        'story' => [],
-      }
-
-      # Two ways to check the last updated time, both unsatisfactory...
-      # sfw_page_data.merge! 'updated_at' => page.headers['Last-Modified']
-      # sfw_page_data.merge! 'updated_at' => meta.datetime.utc.iso8601 if meta.datetime rescue nil
-
-      #ap sfw_page_data
-
-      html = massage_html(html, url)
+      #############
 
       url_chunks = url.match(%r{
         ^
@@ -99,21 +83,28 @@ module FedWiki
       sfw_site = "#{subdomain}.#{Env['SFW_BASE_DOMAIN']}"
       sfw_action_url = "http://#{sfw_site}/page/#{slug}/action"
 
-      if (site_urls = options[:site_urls])
-        doc = Nokogiri::HTML.fragment(html)
-        links = doc / 'a'
-        links.each do |link|
-          if match = link['href'].to_s.match(%r[^.+?#{origin_domain}(?::\d+)?(?<href_path>/.*)$])
-            if site_urls.include?(match[0])
-              link_slug = match['href_path'].slug
-              link['href'] = link_slug
-              link['class'] = "#{link['class']} fedwiki-internal".strip # the class is for later client-side processing
-            end
-          end
-        end
-        html = doc.to_html
-      end
+      #############
 
+      title = extract_title(doc) || metadata.title
+      keywords = metadata.keywords.map(&:first)
+
+      sfw_page_data = {
+        'title' => title,
+        'keywords' => keywords,
+        'license_links' => license_links,
+        'story' => [],
+      }
+
+      # Two ways to check the last updated time, both unsatisfactory...
+      # sfw_page_data.merge! 'updated_at' => page.headers['Last-Modified']
+      # sfw_page_data.merge! 'updated_at' => meta.datetime.utc.iso8601 if meta.datetime rescue nil
+
+      #ap sfw_page_data
+
+      #############
+
+      html = massage_html(html, url)
+      html = convert_links_to_crawled_pages_to_wikilinks(html, origin_domain, options[:site_urls])
       html.strip_lines!
       html_chunks = html.split(/\n{2,}/)
       sep = [%{<hr />}]
@@ -126,6 +117,8 @@ module FedWiki
           'text' => html_chunk
         })
       end
+
+      #############
 
       begin
         sfw_do(sfw_action_url, :create, sfw_page_data)
@@ -179,6 +172,22 @@ module FedWiki
         end
       end
       nil
+    end
+
+    def convert_links_to_crawled_pages_to_wikilinks(html, origin_domain, site_urls)
+      return unless site_urls
+      doc = Nokogiri::HTML.fragment(html)
+      links = doc / 'a'
+      links.each do |link|
+        if match = link['href'].to_s.match(%r[^.+?#{origin_domain}(?::\d+)?(?<href_path>/.*)$])
+          if site_urls.include?(match[0])
+            link_slug = match['href_path'].slug
+            link['href'] = link_slug
+            link['class'] = "#{link['class']} fedwiki-internal".strip # the class is for later client-side processing
+          end
+        end
+      end
+      doc.to_html
     end
 
     def sfw_do(sfw_action_url, action, sfw_page_data)
