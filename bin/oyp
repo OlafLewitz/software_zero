@@ -47,20 +47,20 @@ def crawl(starting_url)
         visited[url] = page.doc  # TODO: if response 200
         attempted += 1
         if (visited.keys.size >= MAX_LINKS_PER_SITE) || (attempted >= MAX_LINKS_PER_SITE * 3)
-          FedWiki.open_site(visited)
+          fedwiki_open_site(visited)
           return
         end
         #sleep rand*8
       end
     end
-    FedWiki.open_site(visited)
+    fedwiki_open_site(visited)
   end
   puts
 end
 
-def fedwiki_open(doc, url)
-  FedWiki.open(
-    doc, url,
+def fedwiki_open_site(visited)
+  FedWiki.open_site(
+    visited,
     :domain_connector => Env['DOMAIN_CONNECTOR'],
     :shorten_origin_domain => Env['SHORTEN_ORIGIN_DOMAIN']
   )

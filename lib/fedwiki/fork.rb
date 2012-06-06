@@ -21,12 +21,12 @@ module FedWiki
   SFW_BASE_DOMAIN = Env['SFW_BASE_DOMAIN'] || raise("please set the environment variable SFW_BASE_DOMAIN")
 
   class << self
-    def open_site(data)
+    def open_site(data, options={})
       urls = data.keys
       data.each do |url, doc|
         sleep rand*4
         begin
-          if fork_url = open(doc, url, :site_urls => urls)
+          if fork_url = open(doc, url, options.merge(:site_urls => urls))
             puts "Created fedwiki page -->"
             puts
             puts fork_url
@@ -71,16 +71,13 @@ module FedWiki
       origin_domain = url_chunks.join
       slug = url.slug
 
-      if options[:username]
-        username = options[:username].slug
-        topic = options[:topic].empty? ? url_chunks.first : options[:topic].slug
-        subdomain = "#{topic}.#{username}"
-      else
-        connector = options[:domain_connector] || 'on'
-        origin = options[:shorten_origin_domain] ? url_chunks.first : url_chunks.join
-        subdomain = "#{origin}.#{connector}"
-      end
 
+      origin = options[:shorten_origin_domain] ? url_chunks.first : url_chunks.join
+      subject = options[:topic] || origin
+      connector = options[:domain_connector]
+      curator = options[:username] || Env['CURATOR']
+
+      subdomain = [subject, connector, curator].compact.map{|segment| segment.slug}.join('.')
       sfw_site = "#{subdomain}.#{Env['SFW_BASE_DOMAIN']}"
       sfw_action_url = "http://#{sfw_site}/page/#{slug}/action"
 
@@ -183,7 +180,9 @@ module FedWiki
 
     def remove_first_h1_if_same_as_title(html, title)
       doc = Nokogiri::HTML.fragment(html)
-      h1.remove if (h1 = (doc / :h1).first) && massage_title(h1.content) == massage_title(title)
+      if (h1 = (doc / :h1).first) && massage_title(h1.content) == massage_title(title)
+        h1.remove
+      end
       doc.to_s
     end
 
