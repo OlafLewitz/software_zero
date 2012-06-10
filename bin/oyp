@@ -43,6 +43,8 @@ def crawl(starting_url)
     attempted = 1
     Anemone.crawl(starting_url) do |anemone|
       anemone.on_every_page do |page|
+        sleep rand*4*4
+        print '.'
         url = page.url.to_s
         visited[url] = page.doc  # TODO: if response 200
         attempted += 1
@@ -59,6 +61,7 @@ def crawl(starting_url)
 end
 
 def fedwiki_open_site(visited)
+  puts
   FedWiki.open_site(
     visited,
     :domain_connector => Env['DOMAIN_CONNECTOR'],
