@@ -39,3 +39,12 @@ you can also crawl entire sites from the command line:
     bundle exec foreman run "bin/oyp [url to crawl]"
 
 Note that you may wish to adjust MAX_LINKS_PER_SITE in your .env file.
+
+Heroku Note
+===========
+
+If you deploy these apps to heroku, you may find the heroku-config extension useful for pushing config files:
+
+    bundle exec heroku plugins:install git://github.com/ddollar/heroku-config.git
+    bundle exec heroku config:push
+
