@@ -22,6 +22,7 @@ class PagesController < ApplicationController
       redirect_to page_url
     rescue FedWiki::NoKnownOpenLicense
       @page.errors.add :url, %{Whoops! We couldn't find a <href="http://creativecommons.org/licenses/" target="_blank">Creative Commons license</a> on this page -- No action was taken}
+                                                        # todo fix html link rendering in the error above
       render :new
     end
   end
