@@ -9,8 +9,13 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
- *= require octopress
+ *= require octopress/screen
  *= require formtastic
  *= require pages
 */
+
+body > header h1 > .message {
+  font-size: 25%;
+  color: #aaaaaa;
+}
 

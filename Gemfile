@@ -13,6 +13,7 @@ gem 'nokogiri'
 gem 'pismo'
 gem 'rest-client'
 gem 'thin'
+gem 'compass', '~> 0.12.1'
 
 group :development do
   gem 'anemone'
@@ -40,6 +41,7 @@ group :assets do
   # gem 'therubyracer', :platform => :ruby
 
   gem 'uglifier', '>= 1.0.3'
+  gem 'compass-rails'
 end
 
 gem 'jquery-rails'
