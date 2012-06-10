@@ -63,6 +63,7 @@ module FedWiki
         ^
         https?://
         (?:www\.)?
+        (?:en\.)?
         (#{SUBDOMAIN_PATTERN})
         ((?:\.#{SUBDOMAIN_PATTERN})+)?
       }x).to_a
@@ -77,7 +78,7 @@ module FedWiki
       connector = options[:domain_connector]
       curator = options[:username] || Env['CURATOR']
 
-      subdomain = [subject, connector, curator].compact.map{|segment| segment.slug}.join('.')
+      subdomain = [subject, connector, curator, connector].compact.map{|segment| segment.slug}.join('.')
       sfw_site = "#{subdomain}.#{Env['SFW_BASE_DOMAIN']}"
       sfw_action_url = "http://#{sfw_site}/page/#{slug}/action"
 
@@ -152,7 +153,7 @@ module FedWiki
 
     def open_license_links(doc)
       links = license_links(doc, 'a[rel="license"]')
-      #!links.empty? ? links : license_links(doc, 'a')
+      !links.empty? ? links : license_links(doc, 'a')
     end
 
     def license_links(doc, selector)
