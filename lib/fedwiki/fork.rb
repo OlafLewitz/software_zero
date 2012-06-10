@@ -188,7 +188,7 @@ module FedWiki
     end
 
     def convert_links_to_crawled_pages_to_wikilinks(html, origin_domain, site_urls)
-      return if site_urls.empty?
+      return html if site_urls.empty?
       doc = Nokogiri::HTML.fragment(html)
       links = doc / 'a'
       links.each do |link|
