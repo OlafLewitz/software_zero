@@ -218,9 +218,14 @@ module FedWiki
 
     def push_to_github(params)
       repo = params[:repo]
-      branch = github :get, repo, "refs/heads/master"
+
+      # get the head of the master branch
+      # see http://developer.github.com/v3/git/refs/
+      branch = github(:get, repo, "refs/heads/master")
       last_commit_sha = branch['object']['sha']
 
+      # create the last commit
+      # see http://developer.github.com/v3/git/commits/
       last_commit = github :get, repo, "commits/#{last_commit_sha}"
       last_tree_sha = last_commit['tree']['sha']
 
@@ -234,25 +239,26 @@ module FedWiki
       # create commit
       # see http://developer.github.com/v3/git/commits/
       new_commit = github :post, repo, :commits,
-                          :parents => [last_commit],
+                          :parents => [last_commit_sha],
                           :tree => new_content_tree_sha,
                           :message => 'commit via api'
       new_commit_sha = new_commit['sha']
 
       # update branch to point to new commit
       # see http://developer.github.com/v3/git/refs/
-      github :patch, repo, "/refs/heads/master",
+      github :patch, repo, "refs/heads/master",
              :sha => new_commit_sha
     end
 
     def github(method, repo, resource, params={})
-      JSON.parse RestClient.send(method,
-                                 "https://#{ENV['GITHUB_USER']}:#{ENV['GITHUB_PASS']}@api.github.com" +
-                                   "/repos/#{ENV['GITHUB_USER']}/#{repo}/git/#{resource}",
-                                 params.to_json, :content_type => :json, :accept => :json
-                 )
+      resource_url = "https://#{ENV['GITHUB_USER']}:#{ENV['GITHUB_PASS']}@api.github.com" +
+        "/repos/#{ENV['GITHUB_USER']}/#{repo}/git/#{resource}"
+      if params.empty?
+        JSON.parse RestClient.send(method, resource_url)
+      else
+        JSON.parse RestClient.send(method, resource_url, params.to_json, :content_type => :json, :accept => :json)
+      end
     end
-
   end
 
 end
