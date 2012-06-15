@@ -120,6 +120,10 @@ module FedWiki
 
       #############
 
+      push_to_github :path => "#{slug}.json", :content => JSON.pretty_generate(sfw_page_data), :repo => 'test'
+
+      #############
+
       begin
         sfw_do(sfw_action_url, :create, sfw_page_data)
       rescue RestClient::Conflict
@@ -212,6 +216,55 @@ module FedWiki
       #end
     end
 
+    def push_to_github(params)
+      json = RestClient.get "https://api.github.com/repos/#{ENV['GITHUB_USER']}/#{params[:repo]}/git/refs/heads/master"
+      data = JSON.parse json
+      last_commit = data['object']['sha']
+
+      json = RestClient.get "https://api.github.com/repos/#{ENV['GITHUB_USER']}/#{params[:repo]}/git/commits/#{last_commit}"
+      data = JSON.parse json
+      last_tree = data['tree']['sha']
+
+      # create tree object (also implicitly creates a blob based on content)
+      # see http://developer.github.com/v3/git/trees/
+      json = RestClient.post "https://#{ENV['GITHUB_USER']}:#{ENV['GITHUB_PASS']}@api.github.com/repos/#{ENV['GITHUB_USER']}/#{params[:repo]}/git/trees",
+                             {:base_tree => last_tree,
+                              :tree => [ { :path => params[:path], :content => params[:content], :mode => '100644' } ]
+                             }.to_json,
+                             :content_type => :json,
+                             :accept => :json
+      data = JSON.parse json
+      new_tree = data['sha']
+
+      # create commit
+      # see http://developer.github.com/v3/git/commits/
+      json = RestClient.post "https://#{ENV['GITHUB_USER']}:#{ENV['GITHUB_PASS']}@api.github.com/repos/#{ENV['GITHUB_USER']}/#{params[:repo]}/git/commits",
+                             {:parents => [ last_commit ],
+                              :tree => new_tree,
+                              :message => 'commit via api'
+                             }.to_json,
+                             :content_type => :json,
+                             :accept => :json
+      data = JSON.parse json
+      new_commit = data['sha']
+
+      # update branch to point to new commit
+      # see http://developer.github.com/v3/git/refs/
+      RestClient.patch "https://#{ENV['GITHUB_USER']}:#{ENV['GITHUB_PASS']}@api.github.com/repos/#{ENV['GITHUB_USER']}/#{params[:repo]}/git/refs/heads/master",
+                       { :sha => new_commit }.to_json,
+                       :content_type => :json,
+                       :accept => :json
+    end
+
+    #def github(method, resource, params)
+    #  JSON.parse RestClient.send(method,
+    #                         "https://#{ENV['GITHUB_USER']}:#{ENV['GITHUB_PASS']}@api.github.com" +
+    #                           "/repos/#{ENV['GITHUB_USER']}/#{params[:repo]}/git/#{resource}",
+    #                         params.to_json, :content_type => :json, :accept => :json
+    #  )
+    #end
+
   end
+
 end
 
