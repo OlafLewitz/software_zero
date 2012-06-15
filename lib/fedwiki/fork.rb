@@ -217,52 +217,41 @@ module FedWiki
     end
 
     def push_to_github(params)
-      json = RestClient.get "https://api.github.com/repos/#{ENV['GITHUB_USER']}/#{params[:repo]}/git/refs/heads/master"
-      data = JSON.parse json
-      last_commit = data['object']['sha']
+      repo = params[:repo]
+      branch = github :get, repo, "refs/heads/master"
+      last_commit_sha = branch['object']['sha']
 
-      json = RestClient.get "https://api.github.com/repos/#{ENV['GITHUB_USER']}/#{params[:repo]}/git/commits/#{last_commit}"
-      data = JSON.parse json
-      last_tree = data['tree']['sha']
+      last_commit = github :get, repo, "commits/#{last_commit_sha}"
+      last_tree_sha = last_commit['tree']['sha']
 
       # create tree object (also implicitly creates a blob based on content)
       # see http://developer.github.com/v3/git/trees/
-      json = RestClient.post "https://#{ENV['GITHUB_USER']}:#{ENV['GITHUB_PASS']}@api.github.com/repos/#{ENV['GITHUB_USER']}/#{params[:repo]}/git/trees",
-                             {:base_tree => last_tree,
-                              :tree => [ { :path => params[:path], :content => params[:content], :mode => '100644' } ]
-                             }.to_json,
-                             :content_type => :json,
-                             :accept => :json
-      data = JSON.parse json
-      new_tree = data['sha']
+      new_content_tree = github :post, repo, :trees,
+                                :base_tree => last_tree_sha,
+                                :tree => [{:path => params[:path], :content => params[:content], :mode => '100644'}]
+      new_content_tree_sha = new_content_tree['sha']
 
       # create commit
       # see http://developer.github.com/v3/git/commits/
-      json = RestClient.post "https://#{ENV['GITHUB_USER']}:#{ENV['GITHUB_PASS']}@api.github.com/repos/#{ENV['GITHUB_USER']}/#{params[:repo]}/git/commits",
-                             {:parents => [ last_commit ],
-                              :tree => new_tree,
-                              :message => 'commit via api'
-                             }.to_json,
-                             :content_type => :json,
-                             :accept => :json
-      data = JSON.parse json
-      new_commit = data['sha']
+      new_commit = github :post, repo, :commits,
+                          :parents => [last_commit],
+                          :tree => new_content_tree_sha,
+                          :message => 'commit via api'
+      new_commit_sha = new_commit['sha']
 
       # update branch to point to new commit
       # see http://developer.github.com/v3/git/refs/
-      RestClient.patch "https://#{ENV['GITHUB_USER']}:#{ENV['GITHUB_PASS']}@api.github.com/repos/#{ENV['GITHUB_USER']}/#{params[:repo]}/git/refs/heads/master",
-                       { :sha => new_commit }.to_json,
-                       :content_type => :json,
-                       :accept => :json
+      github :patch, repo, "/refs/heads/master",
+             :sha => new_commit_sha
     end
 
-    #def github(method, resource, params)
-    #  JSON.parse RestClient.send(method,
-    #                         "https://#{ENV['GITHUB_USER']}:#{ENV['GITHUB_PASS']}@api.github.com" +
-    #                           "/repos/#{ENV['GITHUB_USER']}/#{params[:repo]}/git/#{resource}",
-    #                         params.to_json, :content_type => :json, :accept => :json
-    #  )
-    #end
+    def github(method, repo, resource, params={})
+      JSON.parse RestClient.send(method,
+                                 "https://#{ENV['GITHUB_USER']}:#{ENV['GITHUB_PASS']}@api.github.com" +
+                                   "/repos/#{ENV['GITHUB_USER']}/#{repo}/git/#{resource}",
+                                 params.to_json, :content_type => :json, :accept => :json
+                 )
+    end
 
   end
 
