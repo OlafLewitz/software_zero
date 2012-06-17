@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   before_filter :force_www
 
   def force_www
-    if Env['REDIRECT_TO_WWW'] && request.host !~ /^www\./
+    if request.host == Env['BASE_DOMAIN']
       redirect_to :host => "www.#{request.host}"
     end
   end
