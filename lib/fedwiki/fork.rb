@@ -5,7 +5,7 @@ require 'rest_client'
 require_relative '../env'
 require_relative '../core-ext/nil'
 require_relative '../../config/initializers/string'
-require_relative '../github_api'
+require_dependency File.expand_path("../stores/github", File.dirname(__FILE__))
 
 module FedWiki
 
@@ -78,7 +78,7 @@ module FedWiki
       curator = options[:username] || Env['CURATOR']
 
       subdomain = [subject, connector, curator, connector].compact.map { |segment| segment.slug }.join('.')
-      repo = [subject, curator].map { |segment| segment.slug }.join('--')
+      canonical_subdomain = [subject, curator                    ].map { |segment| segment.slug }.join('.')
 
       #############
 
@@ -100,15 +100,22 @@ module FedWiki
       html = convert_links_to_crawled_pages_to_wikilinks(html, origin_domain, options[:site_urls])
       html.strip_lines!
       html.gsub!(/\n{3,}/, "\n\n")
-      #html_chunks = html.split(/\n{2,}/)
-      sep = [%{<hr />}]
-      attribution_html = [%{This page was forked with permission from <a href="#{url}" target="_blank">#{url}</a>}]
 
-      html += (sep + attribution_html + sep + license_links).join("\n\n")
+      html += %~
+
+      ------------
+
+      This page was forked with permission from <a href="#{url}" target="_blank">#{url}</a>}]
+
+      ------------
+
+      #{license_links.join("\n\n")}
+
+      ~.strip_lines!
 
       #############
 
-      GithubApi.push :repo => repo, :path => "#{slug}.html", :content => html
+      GithubStore.put_text "#{slug}.markdown", html, :subdomain => canonical_subdomain
 
       #############
 
