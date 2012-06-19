@@ -13,7 +13,7 @@ gem 'nokogiri', '>= 1.5.2'
 gem 'pismo'
 gem 'rest-client'
 gem 'thin'
-gem 'compass', '~> 0.12.1'
+gem 'compass', '~> 0.12.1'  # same version as octopress uses
 gem 'redcarpet'
 gem 'github_api', '>= 0.6.0'
 
