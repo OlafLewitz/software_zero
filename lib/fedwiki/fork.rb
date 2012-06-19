@@ -1,5 +1,5 @@
 require 'pismo'
-require 'html_massage'
+require 'html2markdown'
 require 'rest_client'
 
 require_relative '../env'
@@ -96,30 +96,36 @@ module FedWiki
       #############
 
       html = massage_html(html, url)
-      html = remove_first_h1_if_same_as_title(html, title)
       html = convert_links_to_crawled_pages_to_wikilinks(html, origin_domain, options[:site_urls])
-      html.strip_lines!
-      html.gsub!(/\n{3,}/, "\n\n")
+      #html.strip_lines!
+      #html.gsub!(/\n{3,}/, "\n\n")
 
       html += %~
 
-      ------------
+      <hr />
 
-      This page was forked with permission from <a href="#{url}" target="_blank">#{url}</a>}]
+      This page was forked with permission from <a href="#{url}" target="_blank">#{url}</a>
 
-      ------------
+      <hr />
 
       #{license_links.join("\n\n")}
 
       ~.strip_lines!
 
-      #############
+      markdown = html2markdown(html)
 
-      GithubStore.put_text "#{slug}.markdown", html, :subdomain => canonical_subdomain
-
-      #############
+      GithubStore.put_text "#{slug}.markdown", markdown, :subdomain => canonical_subdomain
 
       [ subdomain, slug ]
+    end
+
+    def html2markdown(html)
+      #HTML2Markdown::HTMLPage.new(:contents => html).markdown
+      #s = Time.now
+      markdown = HTML2Markdown.new(html).to_s
+      #e = Time.now
+      #puts 333, e-s
+      markdown
     end
 
     def massage_html(html, url)
@@ -147,8 +153,7 @@ module FedWiki
           'td' => %w[ colspan rowspan ],
         }
       )
-      #HtmlMassage.html html, :source_url => url, :links => :absolute, :images => :absolute, :sanitize => sanitize_options
-      HtmlMassage.text html, :source_url => url, :links => :absolute, :images => :absolute, :sanitize => sanitize_options
+      HtmlMassage.html html, :source_url => url, :links => :absolute, :images => :absolute, :sanitize => sanitize_options
     end
 
     def open_license_links(doc)
