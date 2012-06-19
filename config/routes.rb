@@ -6,4 +6,6 @@ OpenYourProject::Application.routes.draw do
 
   root :to => Env['CREATE_PAGES'] ? 'pages#new' : 'pages#index'
 
+  match ':slug' => 'pages#show', :constraints => /^[^\s\/<>+]+$/
+
 end

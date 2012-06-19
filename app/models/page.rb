@@ -1,4 +1,5 @@
 require 'active_model'
+require_dependency "stores/github"
 
 class Page
   include ActiveModel::Validations
@@ -29,6 +30,23 @@ class Page
       "not initialized"
     end
     "#<#{self.class} #{inspection}>"
+  end
+
+  def self.html(subdomain, slug)
+    segments = subdomain.split('.')
+    segments.reject!{|segment| segment == Env['DOMAIN_CONNECTOR']}
+    raise "Expected 2 subdomain segments, got #{segments.inspect}" unless segments.size == 2
+    canonical_subdomain = segments.join('.')
+    markdown = GithubStore.get_text "#{slug}.markdown", :subdomain => canonical_subdomain
+    markdown2html(markdown)
+  end
+
+  private
+
+  def self.markdown2html(markdown)
+    redcarpet = Redcarpet::Markdown.new Redcarpet::Render::HTML, :autolink => true, :space_after_headers => true
+    html = redcarpet.render markdown
+    html
   end
 
 end

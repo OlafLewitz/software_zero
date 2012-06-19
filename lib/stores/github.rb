@@ -8,17 +8,19 @@ class GithubStore < Store
 
     ### GET
 
-    def get_text(path)
-      path = relative_path(path)
-
-      text
+    def get_text(path, metadata)
+      repo = metadata[:subdomain]
+      raw_url = "https://raw.github.com/#{Env['GITHUB_USER']}/#{repo}/master/#{path}"
+      RestClient.get raw_url
     end
 
     alias_method :get_blob, :get_text
 
     ### PUT
 
-    def put_text(path, text, metadata={})
+    def put_text(path, text, metadata)
+      raise(ArgumentError, "Expected argument 'path'") unless path
+      raise(ArgumentError, "Expected argument 'text'") unless text
       user = ENV['GITHUB_USER'] || raise("Please set env var GITHUB_USER")
       password = ENV['GITHUB_PASS'] || raise("Please set env var GITHUB_PASS")
       repo = metadata[:subdomain]
@@ -44,7 +46,7 @@ class GithubStore < Store
       new_commit_sha = @github.git_data.commits.create(user, repo,
                                                        :parents => [last_commit_sha],
                                                        :tree => new_content_tree_sha,
-                                                       :message => 'commit via api'
+                                                       :message => "Update #{path}"
       ).sha
 
       # update branch to point to new commit
@@ -57,7 +59,14 @@ class GithubStore < Store
       begin
         @github.repos.get(user, repo_name)
       rescue Github::Error::NotFound
-        repo = @github.repos.create(:name => repo_name, :has_wiki => true)
+        repo = @github.repos.create(:name => repo_name,
+                                    #:homepage => 'xxxxxxx',
+                                    :private => false,
+                                    :has_issues => false,
+                                    :has_wiki => false,
+                                    :has_downloads => false,
+                                    :has_wiki => false
+        )
         remote = "https://#{ENV['GITHUB_USER']}:#{ENV['GITHUB_PASS']}@github.com/#{ENV['GITHUB_USER']}/#{repo_name}.git"
         run "mkdir -p #{Rails.root.join('zero')}"
         run "cd #{Rails.root.join('zero')} && git clone #{repo.clone_url}"

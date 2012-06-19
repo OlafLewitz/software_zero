@@ -1,4 +1,4 @@
-require 'fedwiki/fork'
+require_dependency 'fedwiki/fork'
 
 class PagesController < ApplicationController
   def new
@@ -18,8 +18,14 @@ class PagesController < ApplicationController
     html = RestClient.get @page.url
     doc = Nokogiri::HTML(html)
     begin
-      page_url = FedWiki.open(doc, @page.url, :username => @page.username, :topic => @page.topic)
-      redirect_to page_url
+      subdomain, slug = FedWiki.open(doc, @page.url,
+                                     :username => @page.username,
+                                     :topic => @page.topic,
+                                     :domain_connector => Env['DOMAIN_CONNECTOR'],
+                                     :shorten_origin_domain => Env['SHORTEN_ORIGIN_DOMAIN']
+      )
+      port = request.port == 80 ? '' : ":#{request.port}"
+      redirect_to "#{request.protocol}#{subdomain}.#{Env['BASE_DOMAIN']}#{port}/#{slug}"
     rescue FedWiki::NoKnownOpenLicense
       @page.errors.add :url, %{Whoops! We couldn't find a <href="http://creativecommons.org/licenses/" target="_blank">Creative Commons license</a> on this page -- No action was taken}
                                                         # todo fix html link rendering in the error above
@@ -27,10 +33,22 @@ class PagesController < ApplicationController
     end
   end
 
-  def index
-    @viz = :collections
-    @json_path = "http://sfw.#{Env['SFW_BASE_DOMAIN']}/viz/#{@viz}.json"
+  def show
+    @page_html = Page.html subdomain, params[:slug]
   end
+
+  def index
+    raise NotImplementedError
+    #@viz = :collections
+    #@json_path = "/viz/#{@viz}.json"
+  end
+
+  private
+
+  def subdomain
+    request.host.sub(/#{Regexp.escape(Env['BASE_DOMAIN'])}$/, '')   # This is "normally" the same as request.subdomain, but works for all TLDs, regardless of how many periods they contain
+  end
+
 end
 
 
