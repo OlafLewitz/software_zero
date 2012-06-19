@@ -34,12 +34,5 @@ class Store
 
     alias_method :put_page, :put_hash
 
-    ### UTILITY
-
-    def relative_path(path)
-      raise "Please set @app_root" unless @app_root
-      path.match(%r[^#{Regexp.escape @app_root}/?(.+?)$]) ? $1 : path
-    end
-
   end
 end
