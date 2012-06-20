@@ -55,7 +55,7 @@ end
 
 #get '/curators' do
 #  @viz = :curators
-#  @json_path = "http://sfw.#{Env['SFW_BASE_DOMAIN']}/viz/#{@viz}.json"
+#  @json_path = "http://sfw.#{Env['BASE_DOMAIN']}/viz/#{@viz}.json"
 #  haml @viz
 #
 #  # Code formerly in SFW around splitting out curators and collections:

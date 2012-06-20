@@ -79,3 +79,4 @@ module OpenYourProject
 end
 
 CONFIG = OpenYourProject::Application.config
+
