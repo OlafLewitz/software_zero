@@ -11,7 +11,8 @@ module RunCmd
     options = defaults.merge( options )
     cmd.gsub!( /\s+/, ' ' )
     cmd.strip!
-    puts "=> Running #{cmd.inspect}\n" unless options[ :quiet ]
+    cmd_sanitized = cmd.gsub(%r{(https://[-\w]+:)[-\w]+@}, '\1[password sanitized]@')
+    puts "=> Running #{cmd_sanitized.inspect}\n" unless options[ :quiet ]
 
     return unless confirm("Execute [Yn]? ") if options[ :confirm_first ]
 
@@ -26,11 +27,11 @@ module RunCmd
     end
     unless success
       if options[ :continue_on_failure ]
-        msg = "Continuing, ignoring error while running #{cmd.inspect}"
+        msg = "Continuing, ignoring error while running #{cmd_sanitized.inspect}"
         msg += "\nOutput:\n#{output}" if output
         puts msg
       else                                 
-        msg = "ERROR running #{cmd.inspect}"
+        msg = "ERROR running #{cmd_sanitized.inspect}"
         msg += "\nOutput:\n#{output}" if output
         raise msg 
       end

@@ -72,7 +72,7 @@ class GithubStore < Store
         run "mkdir -p #{File.join(@app_root, 'zero')}"
         run "cd #{File.join(@app_root, 'zero')} && git clone #{repo.clone_url}"
         run "cd #{File.join(@app_root, 'zero', repo_name)} && git commit --allow-empty -m 'Initial commit'"
-        run "cd #{File.join(@app_root, 'zero', repo_name)} && git push #{remote} HEAD"
+        run "cd #{File.join(@app_root, 'zero', repo_name)} && git push --quiet #{remote} HEAD"
       end
     end
 
