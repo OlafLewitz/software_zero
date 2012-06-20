@@ -16,6 +16,7 @@ gem 'thin'
 gem 'compass', '~> 0.12.1'  # same version as octopress uses
 gem 'redcarpet'
 gem 'github_api', '>= 0.6.0'
+gem 'airbrake'
 
 group :development do
   gem 'anemone'
