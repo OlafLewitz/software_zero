@@ -35,6 +35,7 @@ class PagesController < ApplicationController
 
   def show
     @page_html = Page.html subdomain, params[:slug]
+    not_found unless @page_html
   end
 
   def index

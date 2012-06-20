@@ -38,7 +38,7 @@ class Page
     raise "Expected 2 subdomain segments, got #{segments.inspect}" unless segments.size == 2
     canonical_subdomain = segments.join('.')
     markdown = Store.get_text "#{slug}.markdown", :subdomain => canonical_subdomain
-    markdown2html(markdown)
+    markdown2html(markdown) if markdown
   end
 
   private

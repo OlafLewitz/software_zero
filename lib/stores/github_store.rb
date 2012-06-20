@@ -12,7 +12,11 @@ class GithubStore < Store
     def get_text(path, metadata)
       repo = metadata[:subdomain]
       raw_url = "https://raw.github.com/#{Env['GITHUB_USER']}/#{repo}/master/#{path}"
-      RestClient.get raw_url
+      begin
+        RestClient.get raw_url
+      rescue RestClient::ResourceNotFound
+        nil
+      end
     end
 
     alias_method :get_blob, :get_text
