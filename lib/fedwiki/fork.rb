@@ -5,7 +5,6 @@ require 'rest_client'
 require_relative '../env'
 require_relative '../core-ext/nil'
 require_relative '../../config/initializers/string'
-require_dependency File.expand_path("../stores/github", File.dirname(__FILE__))
 
 module FedWiki
 
@@ -114,7 +113,7 @@ module FedWiki
 
       markdown = html2markdown(html)
 
-      GithubStore.put_text "#{slug}.markdown", markdown, :subdomain => canonical_subdomain
+      Store.put_text "#{slug}.markdown", markdown, :subdomain => canonical_subdomain
 
       [ subdomain, slug ]
     end

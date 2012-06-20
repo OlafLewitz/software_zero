@@ -37,7 +37,7 @@ class Page
     segments.reject!{|segment| segment == Env['DOMAIN_CONNECTOR']}
     raise "Expected 2 subdomain segments, got #{segments.inspect}" unless segments.size == 2
     canonical_subdomain = segments.join('.')
-    markdown = GithubStore.get_text "#{slug}.markdown", :subdomain => canonical_subdomain
+    markdown = Store.get_text "#{slug}.markdown", :subdomain => canonical_subdomain
     markdown2html(markdown)
   end
 

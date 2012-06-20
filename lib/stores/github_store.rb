@@ -1,3 +1,4 @@
+require 'github_api'
 require_relative 'store'
 require_relative '../run_cmd'
 
@@ -68,10 +69,10 @@ class GithubStore < Store
                                     :has_wiki => false
         )
         remote = "https://#{ENV['GITHUB_USER']}:#{ENV['GITHUB_PASS']}@github.com/#{ENV['GITHUB_USER']}/#{repo_name}.git"
-        run "mkdir -p #{Rails.root.join('zero')}"
-        run "cd #{Rails.root.join('zero')} && git clone #{repo.clone_url}"
-        run "cd #{Rails.root.join('zero', repo_name)} && git commit --allow-empty -m 'Initial commit'"
-        run "cd #{Rails.root.join('zero', repo_name)} && git push #{remote} HEAD"
+        run "mkdir -p #{File.join(@app_root, 'zero')}"
+        run "cd #{File.join(@app_root, 'zero')} && git clone #{repo.clone_url}"
+        run "cd #{File.join(@app_root, 'zero', repo_name)} && git commit --allow-empty -m 'Initial commit'"
+        run "cd #{File.join(@app_root, 'zero', repo_name)} && git push #{remote} HEAD"
       end
     end
 

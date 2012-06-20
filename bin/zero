@@ -17,9 +17,12 @@ require 'json'
 
 Dir[File.expand_path("../lib/fedwiki/*.rb", File.dirname(__FILE__))].each { |lib| require lib }
 require File.expand_path("../lib/env", File.dirname(__FILE__))
+require_relative "../lib/stores/all"
 
 
 MAX_LINKS_PER_SITE = (Env['MAX_LINKS_PER_SITE'] || 2).to_i
+
+Store.set 'GithubStore', File.expand_path("..", File.dirname(__FILE__))
 
 def run
   raise "Please set the environment variable 'SFW_BASE_DOMAIN'" if Env['SFW_BASE_DOMAIN'].nil? || Env['SFW_BASE_DOMAIN'].empty?
