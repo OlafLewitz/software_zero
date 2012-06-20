@@ -96,10 +96,6 @@ class GithubStore < Store
       raise NotImplementedError
     end
 
-    def farm?(_)
-      ENV['FARM_MODE']
-    end
-
     def mkdir(_)
       # do nothing
     end
