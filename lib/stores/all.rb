@@ -1,3 +1,3 @@
 require_relative 'store'
-require_relative 'file'
-require_relative 'github'
+require_relative 'file_store'
+require_relative 'github_store'
