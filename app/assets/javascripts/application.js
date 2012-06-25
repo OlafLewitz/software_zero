@@ -12,7 +12,16 @@
 //= require octopress/octopress
 //= require d3/d3.v2
 //= require pages
-//
-//# require jquery
-//# require jquery_ujs
-//# require_tree .
+
+//= require jquery/jquery
+//= require jquery/jquery.color
+
+//= require gollum/gollum
+//= require gollum/gollum.dialog
+//= require gollum/gollum.placeholder
+//= require gollum/editor/gollum.editor
+//= require_tree ./gollum/editor/langs
+
+//  These don't seem to be needed or used.  Delete if still around by 1 Oct 2012
+//  require mustache
+//  require_tree ../../templates

@@ -118,6 +118,7 @@ GEM
     mime-types (1.18)
     multi_json (1.3.6)
     multipart-post (1.1.5)
+    mustache (0.99.4)
     netrc (0.7.2)
     nokogiri (1.5.4)
     oauth2 (0.7.1)
@@ -187,6 +188,11 @@ GEM
       shoulda-matchers (~> 1.0.0)
     shoulda-context (1.0.0)
     shoulda-matchers (1.0.0)
+    smt_rails (0.2.1)
+      mustache (>= 0.99.4)
+      rails (>= 3.1.0)
+      sprockets (>= 2.0.3)
+      tilt (>= 1.3.3)
     sprockets (2.1.3)
       hike (~> 1.2)
       rack (~> 1.0)
@@ -226,6 +232,7 @@ DEPENDENCIES
   i18n
   jquery-rails
   json
+  mustache (>= 0.11.2, < 1.0.0)
   nokogiri (>= 1.5.2)
   pismo
   rails (= 3.2.3)
@@ -238,5 +245,6 @@ DEPENDENCIES
   rspec-mocks
   sass-rails (~> 3.2.3)
   shotgun
+  smt_rails
   thin
   uglifier (>= 1.0.3)

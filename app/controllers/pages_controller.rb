@@ -33,8 +33,35 @@ class PagesController < ApplicationController
     end
   end
 
+  def edit
+    @slug = params[:id]
+    @title = @slug.gsub('-', ' ')
+    @markdown = Page.get_markdown subdomain, @slug
+    not_found unless @markdown
+
+    @editor = {
+      escaped_name: @slug,
+      page_name: @slug.gsub('-', ' '),
+      page_path: "/pages/#{@slug}",
+      content: @markdown,
+      footer: false,
+      sidebar: false,
+      is_create_page: false,
+      is_edit_page: true,
+      format: 'markdown'
+    }
+  end
+
+  def update
+    @slug = params[:id]
+    @markdown = params[:content]
+    Page.put_markdown subdomain, @slug, @markdown
+    redirect_to "/#{@slug}"
+  end
+
   def show
-    @page_html = Page.html subdomain, params[:slug]
+    @page_html = Page.get_html subdomain, params[:slug]
+    @page_id = params[:slug]
     not_found unless @page_html
   end
 

@@ -32,21 +32,43 @@ class Page
     "#<#{self.class} #{inspection}>"
   end
 
-  def self.html(subdomain, slug)
-    segments = subdomain.split('.')
-    segments.reject!{|segment| segment == Env['DOMAIN_CONNECTOR']}
-    raise "Expected 2 subdomain segments, got #{segments.inspect}" unless segments.size == 2
-    canonical_subdomain = segments.join('.')
-    markdown = Store.get_text "#{slug}.markdown", :subdomain => canonical_subdomain
-    markdown2html(markdown) if markdown
+  def self.get_html(subdomain, slug)
+    markdown2html(get_markdown(subdomain, slug))
   end
+
+  def self.get_markdown(subdomain, slug)
+    subdomain = canonicalize(subdomain)
+    markdown = begin
+      Store.get_text "#{slug}.markdown", :subdomain => subdomain
+    rescue SocketError, socket_error
+      if Rails.env.development?
+        "# Sample page\n\n* Point 1\n* Point 2"   # sample text for dev mode offline work
+      else
+        raise socket_error
+      end
+    end
+    markdown
+  end
+
+  def self.put_markdown(subdomain, slug, markdown)
+    Store.put_text "#{slug}.markdown", markdown, :subdomain => canonicalize(subdomain)
+  end
+
 
   private
 
   def self.markdown2html(markdown)
+    return nil if markdown.nil?
     redcarpet = Redcarpet::Markdown.new Redcarpet::Render::HTML, :autolink => true, :space_after_headers => true
     html = redcarpet.render markdown
     html
+  end
+
+  def self.canonicalize(subdomain)
+    segments = subdomain.split('.')
+    segments.reject!{|segment| segment == Env['DOMAIN_CONNECTOR']}
+    raise "Expected 2 subdomain segments, got #{segments.inspect}" unless segments.size == 2
+    segments.join('.')
   end
 
 end

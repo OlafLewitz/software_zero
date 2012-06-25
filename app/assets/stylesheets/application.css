@@ -1,4 +1,6 @@
 /*
+ * Reminder: last one wins.
+ *
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
  *
@@ -9,13 +11,20 @@
  * compiled file, but it's generally better to create a new file per style scope.
  *
  *= require_self
+
+ *= require gollum/gollum
+ *= require gollum/editor
+ *= require gollum/dialog
+ *= require gollum/template
+
  *= require octopress/screen
+
  *= require formtastic
  *= require pages
+
 */
 
 body > header h1 > .message {
   font-size: 25%;
   color: #aaaaaa;
 }
-
