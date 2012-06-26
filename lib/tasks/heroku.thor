@@ -5,7 +5,7 @@ class Heroku < Thor
 
   desc "create HEROKU_APP_NAME", 'create a new heroku app'
   def create(app_name)
-    run "bundle exec heroku create #{app_name} --stack cedar",
+    run "bundle exec heroku create #{app_name}",
   end
 
   desc "deploy HEROKU_APP_NAME", "deploy HEAD of current branch to the specified heroku app"
