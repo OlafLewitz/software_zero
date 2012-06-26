@@ -1,28 +1,27 @@
-%ul.overview
-  %li
-    &raquo;
-    Transfer any Creative Commons licensed project
-    into the Federated Wiki collaboration framework
-  %li
-    &raquo;
-    Others can copy the project,
-    contribute ideas
-    and make improvements in their copy
-  %li
-    &raquo;
-    The project acts as an idea seed, giving birth
-    to trees of remixes, spreading through
-    communities and trust networks
+%article
+  %ul.overview
+    %li
+      &raquo;
+      Transfer any Creative Commons licensed project
+      into the Federated Wiki collaboration framework
+    %li
+      &raquo;
+      Others can copy the project,
+      contribute ideas
+      and make improvements in their copy
+    %li
+      &raquo;
+      The project acts as an idea seed, giving birth
+      to trees of remixes, spreading through
+      communities and trust networks
 
-.open
-  .action
-    Enter a Web Page to Open
-  = semantic_form_for @page do |f|
-    = f.inputs do
-      = f.input :url,      :label => false, :placeholder => 'www.change-the-world.org'
-      = f.input :username, :label => false, :placeholder => 'Your name'
-      = f.input :topic,    :label => false, :placeholder => 'Topic: help categorize this content for yourself and others'
-    = f.actions do
-      = f.action :submit, :as => :button, :label => 'Open Now'
-
-
+  .open
+    .action
+      Enter a Web Page to Open
+    = semantic_form_for @page do |f|
+      = f.inputs do
+        = f.input :url,      :label => false, :placeholder => 'www.change-the-world.org'
+        = f.input :username, :label => false, :placeholder => 'Your name'
+        = f.input :topic,    :label => false, :placeholder => 'Topic: help categorize this content for yourself and others'
+      = f.actions do
+        = f.action :submit, :as => :button, :label => 'Open Now'
