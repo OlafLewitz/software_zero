@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+# In the order they were added to the project, oldest first:
 gem 'rails', '3.2.3'
 gem 'railties'
 gem 'formtastic'
