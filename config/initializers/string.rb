@@ -14,20 +14,13 @@ class String
 
     if %r{^https?://.+?(?<path>/.*|)$} =~ massaged
       massaged = path.to_s                           # discard protocol, domain, port -- just use path
+      massaged = massaged.split('/').reject{|segment| segment.empty?}.last.to_s  # just the last path segment
       massaged.gsub!(/#.*$/, '')                     # strip off anchor tags, eg #section-2
       massaged.gsub!(/\?.*$/, '')                    # strip off query sting, eg ?cid=6a0
       massaged.gsub!(/\.[[:alnum:]]{3,10}$/, '')     # strip off file extensions, eg .html
 
-      massaged.gsub! %r[^/wiki], ''
-      massaged.gsub! %r[
-        /\d{4}/\d{2}           # optional leading date stamp, eg /2012/12/great-post    or /blog/2012/12/great-post
-        (?:/\d{2})?            #                              or /2012/12/21/           or /blog/brian/2012/12/21/great-post
-        (?=/.*?[[:alpha:]])    # require at least one alpha char after the date (for the slug)
-      ]x, ''
-
-
       home_slug = options['home_slug'] || 'home'
-      massaged = home_slug if massaged.match(%r{^/?$})
+      massaged = home_slug if massaged.empty?
     end
 
     # Remove single quotes within words, eg O'Malley -> OMalley, or Don't -> Dont
