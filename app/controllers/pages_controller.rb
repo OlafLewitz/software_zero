@@ -68,12 +68,6 @@ class PagesController < ApplicationController
     @git_clone_url = "git://github.com/#{Env['GITHUB_USER']}/#{@canonical_subdomain}.git"  # read-only clone URL
   end
 
-  def index
-    raise NotImplementedError
-    #@viz = :collections
-    #@json_path = "/viz/#{@viz}.json"
-  end
-
   private
 
   def canonical_subdomain

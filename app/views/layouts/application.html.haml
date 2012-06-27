@@ -22,8 +22,7 @@
   %header{:role => "banner"}
     %hgroup
       %h1
-        %a{:href => "/"}
-          = Env['SITE_NAME']
+        = link_to Env['SITE_NAME'], root_url(:host => Env['BASE_DOMAIN'])
         - if Env['SITE_MESSAGE']
           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
           %span.message
@@ -39,9 +38,9 @@
     %ul.main-navigation
       - if Env['CREATE_PAGES']
         %li
-          %a{:href => "/"} Open Now
-        %li
-          = link_to 'Collections', pages_path
+        = link_to 'Open Now', new_page_url(:host => Env['BASE_DOMAIN'])
+      %li
+        = link_to (Env['CREATE_PAGES'] ? 'Collections' : 'Home'), collections_url(:host => Env['BASE_DOMAIN'])
   #main
     #content
       %div

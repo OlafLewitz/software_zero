@@ -10,7 +10,7 @@ class GithubStore < Store
     ### GET
 
     def get_text(path, metadata)
-      repo = metadata[:subdomain]
+      repo = metadata[:repo] || metadata[:subdomain] || raise('Please pass in metadata[:repo] or metadata[:subdomain]')
       raw_url = "https://raw.github.com/#{Env['GITHUB_USER']}/#{repo}/master/#{path}"
       begin
         RestClient.get raw_url
