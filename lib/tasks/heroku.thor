@@ -3,11 +3,6 @@ require File.dirname(__FILE__) + "/../run_cmd"
 class Heroku < Thor
   include RunCmd
 
-  desc "create HEROKU_APP_NAME", 'create a new heroku app'
-  def create(app_name)
-    run "bundle exec heroku create #{app_name}",
-  end
-
   desc "deploy HEROKU_APP_NAME", "deploy HEAD of current branch to the specified heroku app"
   def deploy(app_name)
     # add remote in case this dev box doesn't have it yet, makes it easier to track
