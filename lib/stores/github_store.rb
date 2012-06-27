@@ -84,32 +84,5 @@ class GithubStore < Store
       end
     end
 
-    def put_blob(path, blob)
-      raise NotImplementedError
-    end
-
-    ### COLLECTIONS
-
-    def page_metadata(farm_dir, max_pages)
-      raise NotImplementedError
-    end
-
-    def annotated_pages(pages_dir)
-      raise NotImplementedError
-    end
-
-    ### UTILITY
-
-    def has_pages?(pages_dir)
-      raise NotImplementedError
-    end
-
-    def mkdir(_)
-      # do nothing
-    end
-
-    def exists?(path)
-      !(get_text path).nil?
-    end
   end
 end
