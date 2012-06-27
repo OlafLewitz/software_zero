@@ -17,7 +17,7 @@ require 'json'
 
 Dir[File.expand_path("../lib/fedwiki/*.rb", File.dirname(__FILE__))].each { |lib| require lib }
 require File.expand_path("../lib/env", File.dirname(__FILE__))
-require_relative "../lib/stores/all"
+require_relative "../app/models/page"
 
 
 MAX_LINKS_PER_SITE = (Env['MAX_LINKS_PER_SITE'] || 2).to_i

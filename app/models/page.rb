@@ -1,5 +1,6 @@
 require 'active_model'
 require_dependency "stores/github_store"  # reload changes to this file in dev env
+require_relative "../../lib/stores/all"
 
 class Page
   include ActiveModel::Validations

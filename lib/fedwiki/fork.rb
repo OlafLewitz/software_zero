@@ -113,7 +113,7 @@ module FedWiki
 
       markdown = html2markdown(html)
 
-      Store.put_text "#{slug}.markdown", markdown, :subdomain => canonical_subdomain
+      Page.put_markdown slug, markdown, :subdomain => canonical_subdomain
 
       [ subdomain, slug ]
     end
