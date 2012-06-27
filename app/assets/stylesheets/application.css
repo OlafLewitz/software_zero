@@ -12,6 +12,9 @@
  *
  *= require_self
 
+ *= require bootstrap/bootstrap
+ *= require bootstrap/bootstrap-responsive
+
  *= require gollum/gollum
  *= require gollum/editor
  *= require gollum/dialog
