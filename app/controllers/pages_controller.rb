@@ -36,7 +36,7 @@ class PagesController < ApplicationController
   def edit
     @slug = params[:id]
     @title = @slug.gsub('-', ' ')
-    @markdown = Page.get_markdown subdomain, @slug
+    @markdown = Page.get_markdown canonical_subdomain, @slug
     not_found unless @markdown
 
     @editor = {
@@ -55,14 +55,17 @@ class PagesController < ApplicationController
   def update
     @slug = params[:id]
     @markdown = params[:content]
-    Page.put_markdown subdomain, @slug, @markdown
+    Page.put_markdown @slug, @markdown, :subdomain => canonical_subdomain
     redirect_to "/#{@slug}"
   end
 
   def show
-    @page_html = Page.get_html subdomain, params[:slug]
+    @canonical_subdomain = canonical_subdomain
     @page_id = params[:slug]
+    @page_html = Page.get_html @canonical_subdomain, @page_id
     not_found unless @page_html
+    @zipball_url = "https://github.com/#{Env['GITHUB_USER']}/#{@canonical_subdomain}/zipball/master"
+    @git_clone_url = "git://github.com/#{Env['GITHUB_USER']}/#{@canonical_subdomain}.git"  # read-only clone URL
   end
 
   def index
@@ -73,8 +76,9 @@ class PagesController < ApplicationController
 
   private
 
-  def subdomain
-    request.host.sub(/#{Regexp.escape(Env['BASE_DOMAIN'])}$/, '')   # This is "normally" the same as request.subdomain, but works for all TLDs, regardless of how many periods they contain
+  def canonical_subdomain
+    subdomain = request.host.sub(/#{Regexp.escape(Env['BASE_DOMAIN'])}$/, '')   # This is "normally" the same as request.subdomain, but works for all TLDs, regardless of how many periods they contain
+    Page.canonicalize(subdomain)
   end
 
 end

@@ -33,29 +33,44 @@ class Page
   end
 
   def self.get_html(subdomain, slug)
-    markdown2html(get_markdown(subdomain, slug))
+    markdown2html get_markdown(subdomain, slug)
   end
 
   def self.get_markdown(subdomain, slug)
+    jekyll_markdown = get_jekyll_markdown subdomain, slug
+    jekyll_markdown.sub(/\A\s*---\r?\n.*?\n---\r?\n\s*/m, '')   # remove jekyll (YAML) front matter
+  end
+
+  def self.put_markdown(slug, markdown, metadata)
+    put_jekyll_markdown(slug, markdown, metadata)
+  end
+
+  private
+
+  def self.get_jekyll_markdown(subdomain, slug)
     subdomain = canonicalize(subdomain)
-    markdown = begin
+    jekyll_markdown = begin
       Store.get_text "#{slug}.markdown", :subdomain => subdomain
     rescue SocketError, socket_error
       if Rails.env.development?
-        "# Sample page\n\n* Point 1\n* Point 2"   # sample text for dev mode offline work
+        "---\nlayout:default\n---\n\n# Sample page\n\n* Point 1\n* Point 2"   # sample text for dev mode offline work
       else
         raise socket_error
       end
     end
-    markdown
+    jekyll_markdown
   end
 
-  def self.put_markdown(subdomain, slug, markdown)
-    Store.put_text "#{slug}.markdown", markdown, :subdomain => canonicalize(subdomain)
+  def self.put_jekyll_markdown(slug, markdown, metadata)
+    jekyll_front_matter = {
+      'layout' => 'default',
+    }.to_yaml
+    #}.merge(metadata).to_yaml
+
+    jekyll_markdown = "#{jekyll_front_matter}---\n\n#{markdown}"
+
+    Store.put_text "#{slug}.markdown", jekyll_markdown, metadata
   end
-
-
-  private
 
   def self.markdown2html(markdown)
     return nil if markdown.nil?

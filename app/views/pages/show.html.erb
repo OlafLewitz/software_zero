@@ -1,3 +1,13 @@
 <%= link_to 'Remix This', edit_page_path(:id => @page_id) %>
 
 <%= @page_html.html_safe %>
+
+<hr />
+
+<div class="copying">
+  Information wants to be free.  You can download a copy of this collection in the following ways:
+  <ul>
+    <li>Get the collection as a <a href="<%= @zipball_url %>" rel="nofollow">zip file</a></li>
+    <li>[For geeks only] Git clone URL: <input type="text" spellcheck="false" class="url-field" value="<%= @git_clone_url %>"></li>
+  </ul>
+</div>

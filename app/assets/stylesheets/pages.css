@@ -56,7 +56,21 @@ input[type=submit]:hover {
 }
 
 /*              */
-/* pages#indes  */
+/* pages#show   */
+/*              */
+
+input.url-field {
+  display:inline;
+  padding: 0 5px 0 5px;
+  height: 25px;
+  border:1px solid #ccc;
+  border-left:none;
+  font-family:Consolas,Menlo,"Liberation Mono",Courier,monospace;
+  font-size:12px;color:#666;
+}
+
+/*              */
+/* pages#index  */
 /*              */
 
 circle {
