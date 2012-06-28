@@ -34,3 +34,8 @@ If you deploy these apps to heroku, you may find the heroku-config extension use
     bundle exec heroku plugins:install git://github.com/ddollar/heroku-config.git
     bundle exec heroku config:push
 
+FedWiki Developers
+==================
+
+If you are looking for Smallest Federated Wiki related code, try this branch:
+https://github.com/harlantwood/software_zero/tree/fedwiki_backed
