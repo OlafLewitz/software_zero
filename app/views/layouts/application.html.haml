@@ -36,11 +36,9 @@
     -#    %input{:name => "q", :type => "hidden", :value => "site:openyourproject.org"}/
     -#    %input.search{:name => "q", :placeholder => "Search", :results => "0", :type => "text"}/
     %ul.main-navigation
+      %li= link_to 'Home', collections_url(:host => Env['BASE_DOMAIN'])
       - if Env['CREATE_PAGES']
-        %li
-        = link_to 'Open Now', new_page_url(:host => Env['BASE_DOMAIN'])
-      %li
-        = link_to (Env['CREATE_PAGES'] ? 'Collections' : 'Home'), collections_url(:host => Env['BASE_DOMAIN'])
+        %li= link_to "Create #{Env['COLLECTION_LABEL']}", new_page_url(:host => Env['BASE_DOMAIN'])
   #main
     #content
       %div
