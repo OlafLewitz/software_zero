@@ -1,22 +1,17 @@
 #!/usr/bin/env ruby
 #
 #  Usage:
-#    export SFW_BASE_DOMAIN=my-fed-wiki-farm.org
-#    bundle exec bin/oyp [url to crawl]
+#    bundle exec foreman run bin/zero [url to crawl]
 #
-#  For local development, try spinning up a SFW (running in farm mode) on port 1111, then:
-#    export SFW_BASE_DOMAIN=lvh.me:1111
-#    bundle exec bin/oyp [url to crawl]
-#
-#  If no "url to crawl" is given, we look for a local file called 'links.txt' and crawl each link in turn
 #  For a test URL, try http://en.wikipedia.org/wiki/Special:Random
+#  If no "url to crawl" is given, we look for a local file called 'links.txt' and crawl each link in turn
 #
 
 require 'anemone'
 require 'json'
 
-Dir[File.expand_path("../lib/fedwiki/*.rb", File.dirname(__FILE__))].each { |lib| require lib }
-require File.expand_path("../lib/env", File.dirname(__FILE__))
+require_relative "../lib/env"
+require_relative "../lib/fork_this/open"
 require_relative "../app/models/page"
 
 
@@ -41,7 +36,7 @@ end
 def crawl(starting_url)
   html = RestClient.get starting_url rescue nil
   doc = Nokogiri::HTML(html)
-  if html && !FedWiki.open_license_links(doc).empty?
+  if html && !ForkThis.open_license_links(doc).empty?
     visited = {starting_url => doc}
     attempted = 1
     Anemone.crawl(starting_url) do |anemone|
@@ -52,20 +47,20 @@ def crawl(starting_url)
         visited[url] = page.doc  # TODO: if response 200
         attempted += 1
         if (visited.keys.size >= MAX_LINKS_PER_SITE) || (attempted >= MAX_LINKS_PER_SITE * 3)
-          fedwiki_open_site(visited)
+          open_site(visited)
           return
         end
         #sleep rand*8
       end
     end
-    fedwiki_open_site(visited)
+    open_site(visited)
   end
   puts
 end
 
-def fedwiki_open_site(visited)
+def open_site(visited)
   puts
-  FedWiki.open_site(
+  ForkThis.open_site(
     visited,
     :domain_connector => Env['DOMAIN_CONNECTOR'],
     :shorten_origin_domain => Env['SHORTEN_ORIGIN_DOMAIN']

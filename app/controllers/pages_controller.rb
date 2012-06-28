@@ -1,4 +1,4 @@
-require_dependency 'fedwiki/fork'
+require_dependency 'fork_this/open'
 
 class PagesController < ApplicationController
   def new
@@ -18,7 +18,7 @@ class PagesController < ApplicationController
     html = RestClient.get @page.url
     doc = Nokogiri::HTML(html)
     begin
-      subdomain, slug = FedWiki.open(doc, @page.url,
+      subdomain, slug = ForkThis.open(doc, @page.url,
                                      :username => @page.username,
                                      :topic => @page.topic,
                                      :domain_connector => Env['DOMAIN_CONNECTOR'],
@@ -26,7 +26,7 @@ class PagesController < ApplicationController
       )
       port = request.port == 80 ? '' : ":#{request.port}"
       redirect_to "#{request.protocol}#{subdomain}.#{Env['BASE_DOMAIN']}#{port}/#{slug}"
-    rescue FedWiki::NoKnownOpenLicense
+    rescue ForkThis::NoKnownOpenLicense
       @page.errors.add :url, %{Whoops! We couldn't find a <href="http://creativecommons.org/licenses/" target="_blank">Creative Commons license</a> on this page -- No action was taken}
                                                         # todo fix html link rendering in the error above
       render :new

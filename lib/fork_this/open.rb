@@ -5,7 +5,7 @@ require_relative '../env'
 require_relative '../core-ext/nil'
 require_relative '../../config/initializers/string'
 
-module FedWiki
+module ForkThis
 
   class NoKnownOpenLicense < RuntimeError;
   end
@@ -24,11 +24,11 @@ module FedWiki
         sleep rand*4
         begin
           if fork_url = open(doc, url, options.merge(:site_urls => urls))
-            puts "Created fedwiki page -->"
+            puts "Created page -->"
             puts
             puts fork_url
           end
-        rescue FedWiki::NoKnownOpenLicense
+        rescue ForkThis::NoKnownOpenLicense
           print "no known open license"
         end
       end
