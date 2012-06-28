@@ -124,31 +124,7 @@ module FedWiki
     end
 
     def massage_html(html, url)
-      sanitize_options = HtmlMassage::DEFAULT_SANITIZE_OPTIONS.merge(
-        :elements => %w[
-            a img
-            hr p
-            h1 h2 h3 h4 h5 h6
-
-            table tbody th tr td
-            ul ol li
-            dd dl dt
-
-            b i em strong
-            small strike
-            sub sup
-
-            blockquote
-            code pre
-          ],
-        :attributes => {
-          :all => [],
-          'a' => %w[ href ],
-          'img' => %w[ src alt ],
-          'td' => %w[ colspan rowspan ],
-        }
-      )
-      HtmlMassage.html html, :source_url => url, :links => :absolute, :images => :absolute, :sanitize => sanitize_options
+      HtmlMassage.html html, :source_url => url, :links => :absolute, :images => :absolute
     end
 
     def open_license_links(doc)
