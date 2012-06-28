@@ -39,3 +39,6 @@ FedWiki Developers
 
 If you are looking for Smallest Federated Wiki related code, try this branch:
 https://github.com/harlantwood/software_zero/tree/fedwiki_backed
+
+Of particular interest is this file, which writes to SFW instances via the HTTP API:
+https://github.com/harlantwood/software_zero/blob/fedwiki_backed/lib/fedwiki/fork.rb
