@@ -1,5 +1,4 @@
 require 'pismo'
-require 'html2markdown'
 require 'rest_client'
 
 require_relative '../env'
@@ -119,11 +118,8 @@ module FedWiki
     end
 
     def html2markdown(html)
-      #HTML2Markdown::HTMLPage.new(:contents => html).markdown
-      #s = Time.now
-      markdown = HTML2Markdown.new(html).to_s
-      #e = Time.now
-      #puts 333, e-s
+      #markdown = HTML2Markdown.new(html).to_s
+      markdown = Remark.new(html).to_markdown
       markdown
     end
 
