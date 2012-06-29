@@ -20,7 +20,7 @@
   %link{:href => "http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
   %link{:href => "http://fonts.googleapis.com/css?family=Merienda+One:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
 %body
-  %header{:role => "banner", :onclick => "window.location='#{root_url :host => Env['BASE_DOMAIN'] }';", :style => 'background-image: url(/assets/skins/appstoreforyourhead/headers/1.png);'}
+  %header{:role => "banner", :onclick => "window.location='#{root_url :host => Env['BASE_DOMAIN'] }';", :style => "background-image: url(#{banner_image});"}
     %hgroup
       %h1
         = Env['SITE_NAME']
