@@ -7,10 +7,9 @@ class Page
   include ActiveModel::Conversion
   extend ActiveModel::Naming
 
-  attr_accessor :url, :username, :topic
+  attr_accessor :title, :content, :username
 
-  validates_presence_of :url
-  validates_length_of :topic, :minimum => 8
+  validates_length_of :title, :minimum => 8
   validates_length_of :username, :minimum => 8
 
   def initialize(attributes = {})
@@ -31,6 +30,23 @@ class Page
       "not initialized"
     end
     "#<#{self.class} #{inspection}>"
+  end
+
+  def save
+    self.class.put_markdown(slug, content, :subdomain => self.class.canonicalize(subdomain))
+  end
+
+  def slug
+    title.slug
+  end
+
+  def subdomain
+    "#{title.slug}.#{username.slug}"
+
+    #subject = title.slug
+    #curator = username.slug
+    #connector = Env['DOMAIN_CONNECTOR']
+    #[subject, connector, curator, connector].compact.join('.')
   end
 
   def self.get_html(subdomain, slug)

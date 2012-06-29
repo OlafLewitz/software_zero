@@ -1,34 +1,40 @@
-require_dependency 'fork_this/open'
-
 class PagesController < ApplicationController
   def new
-    page_attrs = CONFIG.form_pre_filled ? {
-      :url => 'http://en.wikipedia.org/wiki/Technological_singularity',
-      :username => 'John Q. Public',
-      :topic => 'test only',
-    } : {}
-
-    @page = Page.new page_attrs
+    @markdown = Page.get_markdown 'meta', 'page_template'
+    @editor = {
+      content: @markdown,
+      collection_label: Env['COLLECTION_LABEL'],
+      footer: false,
+      sidebar: false,
+      is_create_page: true,
+      is_edit_page: false,
+      format: 'markdown'
+    }
   end
 
   def create
-    @page = Page.new(params[:page])
-    (render :new and return) unless @page.valid?
+    @page = Page.new(
+      :title => params[:page],
+      :content => params[:content],
+      :username => params[:username]
+    )
 
-    html = RestClient.get @page.url
-    doc = Nokogiri::HTML(html)
-    begin
-      subdomain, slug = ForkThis.open(doc, @page.url,
-                                     :username => @page.username,
-                                     :topic => @page.topic,
-                                     :domain_connector => Env['DOMAIN_CONNECTOR'],
-                                     :shorten_origin_domain => Env['SHORTEN_ORIGIN_DOMAIN']
-      )
-      port = request.port == 80 ? '' : ":#{request.port}"
-      redirect_to "#{request.protocol}#{subdomain}.#{Env['BASE_DOMAIN']}#{port}/#{slug}"
-    rescue ForkThis::NoKnownOpenLicense
-      @page.errors.add :url, %{Whoops! We couldn't find a <href="http://creativecommons.org/licenses/" target="_blank">Creative Commons license</a> on this page -- No action was taken}
-                                                        # todo fix html link rendering in the error above
+    if @page.valid?
+      @page.save
+      redirect_to "#{request.protocol}#{@page.subdomain}.#{Env['BASE_DOMAIN']}#{port}/#{@page.slug}"
+    else
+      @editor = {
+        content: @page.content,
+        page_name: @page.title,
+        username: @page.username,
+        collection_label: Env['COLLECTION_LABEL'],
+        footer: false,
+        sidebar: false,
+        is_create_page: true,
+        is_edit_page: false,
+        format: 'markdown'
+      }
+      p 777, @page.errors.to_a
       render :new
     end
   end

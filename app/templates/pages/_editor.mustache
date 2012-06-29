@@ -1,6 +1,6 @@
 <div id="gollum-editor" data-escaped-name="{{escaped_name}}" class="{{#is_create_page}}create{{/is_create_page}}{{#is_edit_page}}edit{{/is_edit_page}}">
 {{#is_create_page}}
-<form name="gollum-editor" action="/create" method="post">
+<form name="gollum-editor" action="/pages" method="post">
 {{/is_create_page}}
 {{#is_edit_page}}
   <form name="gollum-editor" action="{{page_path}}" method="post">
@@ -10,7 +10,7 @@
   {{#is_create_page}}
   <div id="gollum-editor-title-field" class="singleline">
     <label for="page" class="jaws">Page Title</label>
-    <input type="text" name="page" id="gollum-editor-page-title" value="{{page_name}}">
+    <input type="text" name="page" id="gollum-editor-page-title" value="{{page_name}}" placeholder="{{collection_label}} Title">
   </div>
   {{/is_create_page}}
   {{#is_edit_page}}
@@ -92,6 +92,13 @@
       <textarea id="gollum-editor-sidebar" name="sidebar">{{sidebar}}</textarea>
     </div>
     {{/sidebar}}
+
+	  {{#is_create_page}}
+	  <div id="gollum-editor-username-field" class="singleline">
+	    <label for="page" class="jaws">Your name</label>
+	    <input type="text" name="username" id="gollum-editor-username" placeholder="Your name" value="{{username}}">
+	  </div>
+	  {{/is_create_page}}
 
     <span class="jaws"><br></span>
     <input type="submit" id="gollum-editor-submit" value="Save" title="Save current changes">

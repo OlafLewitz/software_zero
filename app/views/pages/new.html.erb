@@ -1,0 +1,15 @@
+<div id="wiki-wrapper" class="edit">
+<div id="head">
+  <h1>Create New Page</h1>
+</div>
+  <div id="wiki-content" class="create edit">
+    <div class="has-rightbar">
+      <%= render 'editor', :handlers => [:mustache], :mustache => @editor %>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+jQuery(document).ready(function() {
+  $.GollumEditor({ NewFile: true, MarkupType: 'markdown' });
+});
+</script>

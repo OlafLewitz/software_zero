@@ -14,4 +14,8 @@ class ApplicationController < ActionController::Base
     raise ActionController::RoutingError.new('Not Found')
   end
 
+  def port
+    request.port == 80 ? '' : ":#{request.port}"
+  end
+
 end

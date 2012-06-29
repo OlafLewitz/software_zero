@@ -17,10 +17,10 @@
 .open
   .action
     Enter a Web Page to Open
-  = semantic_form_for @page do |f|
+  = semantic_form_for @forked_page do |f|
     = f.inputs do
       = f.input :url,      :label => false, :placeholder => 'www.change-the-world.org'
       = f.input :username, :label => false, :placeholder => 'Your name'
-      = f.input :topic,    :label => false, :placeholder => 'Topic: help categorize this content for yourself and others'
+      = f.input :title,    :label => false, :placeholder => 'Topic: help categorize this content for yourself and others'
     = f.actions do
       = f.action :submit, :as => :button, :label => 'Open Now'
