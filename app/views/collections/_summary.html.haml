@@ -1,8 +1,9 @@
 - port = request.port == 80 ? '' : ":#{request.port}"
 - subdomain = attrs['subdomain'] || raise("No subdomain found for #{name}")
 - link = "#{request.protocol}#{subdomain}.#{Env['BASE_DOMAIN']}#{port}/#{attrs['home_page']}"
-.span3
-  %h2= name
-  %p= attrs['summary'] || raise("No summary found for #{name}")
-  %p
-    %a.btn{:href => link} View details &raquo;
+- icon = attrs['icon'] || raise("No icon found for #{name}")
+
+.span2.app.icon
+  %a.btn{:href => link}
+    %i{:class => icon, :style=>"font-size: 125px;"}
+    .app_name= name

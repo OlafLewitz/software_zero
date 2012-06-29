@@ -17,3 +17,11 @@ a {
   color: #cc0000;
   margin: 0.5em 0 0 25%
 }
+
+.apps .app.icon > a {
+  color: #333 !important;
+}
+
+.apps .app.icon {
+  text-align: center;
+}
