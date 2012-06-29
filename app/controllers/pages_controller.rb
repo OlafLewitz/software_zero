@@ -5,7 +5,7 @@ class PagesController < ApplicationController
     page_attrs = CONFIG.form_pre_filled ? {
       :url => 'http://en.wikipedia.org/wiki/Technological_singularity',
       :username => 'John Q. Public',
-      :topic => 'Singularity',
+      :topic => 'test only',
     } : {}
 
     @page = Page.new page_attrs
