@@ -11,6 +11,9 @@
   <div id="gollum-editor-title-field" class="singleline">
     <label for="page" class="jaws">Page Title</label>
     <input type="text" name="page" id="gollum-editor-page-title" value="{{page_name}}" placeholder="{{collection_label}} Title">
+    {{#errors_on_title_present}}
+      <p class="inline-errors">{{errors_on_title}}</p>
+    {{/errors_on_title_present}}
   </div>
   {{/is_create_page}}
   {{#is_edit_page}}
@@ -97,6 +100,9 @@
 	  <div id="gollum-editor-username-field" class="singleline">
 	    <label for="page" class="jaws">Your name</label>
 	    <input type="text" name="username" id="gollum-editor-username" placeholder="Your name" value="{{username}}">
+      {{#errors_on_username_present}}
+        <p class="inline-errors">{{errors_on_username}}</p>
+      {{/errors_on_username_present}}
 	  </div>
 	  {{/is_create_page}}
 

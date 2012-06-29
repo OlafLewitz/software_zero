@@ -32,7 +32,11 @@ class PagesController < ApplicationController
         sidebar: false,
         is_create_page: true,
         is_edit_page: false,
-        format: 'markdown'
+        format: 'markdown',
+        errors_on_title_present: @page.errors[:title].present?,
+        errors_on_title: @page.errors[:title].to_sentence,
+        errors_on_username_present: @page.errors[:username].present?,
+        errors_on_username: @page.errors[:username].to_sentence,
       }
       p 777, @page.errors.to_a
       render :new
