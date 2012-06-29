@@ -18,8 +18,13 @@ a {
   margin: 0.5em 0 0 25%
 }
 
-.apps .app.icon > a {
+.apps .app.icon > a,
+.apps .app.icon > a:visited,
+.apps .app.icon > a:hover,
+.apps .app.icon > a:active,
+ {
   color: #333 !important;
+  text-decoration:none
 }
 
 .apps .app.icon {
