@@ -18,11 +18,12 @@
   / Fonts from Google"s Web font directory at http://google.com/webfonts
   %link{:href => "http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
   %link{:href => "http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
-%body{:class => 'collapse-sidebar'}
-  %header{:role => "banner"}
+  %link{:href => "http://fonts.googleapis.com/css?family=Merienda+One:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
+%body
+  %header{:role => "banner", :onclick => "window.location='#{root_url :host => Env['BASE_DOMAIN'] }';", :style => 'background-image: url(/assets/skins/appstoreforyourhead/headers/1.png);'}
     %hgroup
       %h1
-        = link_to Env['SITE_NAME'], root_url(:host => Env['BASE_DOMAIN'])
+        = Env['SITE_NAME']
         - if Env['SITE_MESSAGE']
           &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
           %span.message
@@ -36,7 +37,7 @@
     -#    %input{:name => "q", :type => "hidden", :value => "site:openyourproject.org"}/
     -#    %input.search{:name => "q", :placeholder => "Search", :results => "0", :type => "text"}/
     %ul.main-navigation
-      %li= link_to 'Home', collections_url(:host => Env['BASE_DOMAIN'])
+      %li= link_to 'Home', root_url(:host => Env['BASE_DOMAIN'])
       - if Env['CREATE_PAGES']
         %li= link_to "Create #{Env['COLLECTION_LABEL']}", new_page_url(:host => Env['BASE_DOMAIN'])
   #main
@@ -47,38 +48,28 @@
 
       %aside.sidebar
         %section
-        -#%h1 Top Tags
-        -##viz-tags
-        -#%script{:src => "/javascripts/viz/tags.js", :type => "text/javascript"}
-        -#%section
-        -#  %h1 Top Collections
-        -#  %a{:href=>'/collections'}
-        -#    #viz-collections
-        -#  %script{:src => "/javascripts/viz/collections.js", :type => "text/javascript"}
-        -#%section
-        -#  %h1 Tags
-        -#  %ul#pages
-        -#    %li.post
-        -#      %a{:href => "/pub/Human_Potential/index.html"} Human Potential
-        -#    %li.post
-        -#      %a{:href => "/pub/Open_Source_Transformation/index.html"} Open Source Transformation
-        -#    %li.post
-        -#      %a{:href => "/pub/Quotations/index.html"} Quotes
-        -#    %li.post
-        -#      %a{:href => "/pub/Spiritual_Transhumanism/index.html"} Spiritual Transhumanism
-        -#    %li.post
-        -#      %a{:href => "/pub/The_Trust_Exchange_is_Landing/index.html"} The Trust Exchange is Landing
-
-
+          %h1 Categories
+          %ul#pages
+            %li
+              %a{:href => "#"} Family
+            %li
+              %a{:href => "#"} Product Development
+            %li
+              %a{:href => "#"} Corporate Life
+            %li
+              %a{:href => "#"} Personal Growth
 
   %footer
     Powered by
-    = succeed "," do
-      %a{:href => 'http://enlightenedstructure.org/Software_Zero/'} Enlightened Structure Software Zero
-
-    responsive design by
     = succeed "." do
-      %a{:href => "http://octopress.org"} Octopress
+      %a{:href => 'http://enlightenedstructure.org/Software_Zero/'} Enlightened Structure Software Zero
+    &nbsp;
+
+    Design by
+    %a{:href => "http://octopress.org/"} Octopress
+    &amp;
+    = succeed "." do
+      %a{:href => "http://www.arisascott.com/"} Arisa Scott
 
   /
     Env['RACK_ENV'] = #{Env['RACK_ENV'].inspect}
