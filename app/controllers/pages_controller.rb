@@ -38,7 +38,6 @@ class PagesController < ApplicationController
         errors_on_username_present: @page.errors[:username].present?,
         errors_on_username: @page.errors[:username].to_sentence,
       }
-      p 777, @page.errors.to_a
       render :new
     end
   end
