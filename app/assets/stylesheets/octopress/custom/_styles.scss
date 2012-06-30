@@ -13,20 +13,27 @@ a {
   color: #919 !important;
 }
 
+footer a {
+  color: #904f90 !important;
+}
+
 .inline-errors {
   color: #cc0000;
   margin: 0.5em 0 0 25%
 }
 
-.apps .app.icon > a,
-.apps .app.icon > a:visited,
-.apps .app.icon > a:hover,
-.apps .app.icon > a:active,
- {
-  color: #333 !important;
-  text-decoration:none
-}
-
-.apps .app.icon {
+.apps > .app {
+  float: left;
+  margin: 0 1em;
   text-align: center;
 }
+
+.apps > .app > a,
+.apps > .app > a:visited,
+.apps > .app > a:hover,
+.apps > .app > a:active,
+ {
+  color: #333 !important;
+  text-decoration:none;
+}
+

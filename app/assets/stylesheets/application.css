@@ -14,7 +14,7 @@
 
  *= require font-awesome
 
- *= require bootstrap/bootstrap-responsive-custom-minimal
+ *#=# require bootstrap/bootstrap-responsive-custom-minimal
 
  *= require gollum/gollum
  *= require gollum/editor
