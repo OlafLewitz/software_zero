@@ -128,6 +128,7 @@ GEM
     multipart-post (1.1.5)
     mustache (0.99.4)
     netrc (0.7.2)
+    newrelic_rpm (3.4.0.1)
     nokogiri (1.5.4)
     oauth2 (0.7.1)
       faraday (~> 0.8)
@@ -241,6 +242,7 @@ DEPENDENCIES
   jquery-rails
   json
   mustache (>= 0.11.2, < 1.0.0)
+  newrelic_rpm
   nokogiri (>= 1.5.2)
   pismo
   rails (= 3.2.3)
