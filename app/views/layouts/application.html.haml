@@ -20,7 +20,7 @@
   %link{:href => "http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
   %link{:href => "http://fonts.googleapis.com/css?family=Merienda+One:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
 %body{:class => 'no-sidebar'}
-  %header{:role => "banner", :onclick => "window.location='#{root_url :host => Env['BASE_DOMAIN'] }';", :style => "background-image: url(#{banner_image});"}
+  %header{:role => "banner", :onclick => "window.location='#{root_url :host => Env['BASE_DOMAIN'] }';", :style => banner_style}
     %hgroup
       %h1
         = Env['SITE_NAME']
