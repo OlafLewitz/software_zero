@@ -19,7 +19,7 @@
   %link{:href => "http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
   %link{:href => "http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
   %link{:href => "http://fonts.googleapis.com/css?family=Merienda+One:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
-%body
+%body{:class => 'no-sidebar'}
   %header{:role => "banner", :onclick => "window.location='#{root_url :host => Env['BASE_DOMAIN'] }';", :style => "background-image: url(#{banner_image});"}
     %hgroup
       %h1
@@ -46,18 +46,12 @@
         %article
           = yield
 
-      %aside.sidebar
-        %section
-          %h1 Categories
-          %ul#pages
-            %li
-              %a{:href => "#"} Family
-            %li
-              %a{:href => "#"} Product Development
-            %li
-              %a{:href => "#"} Corporate Life
-            %li
-              %a{:href => "#"} Personal Growth
+      -#%aside.sidebar
+      -#  %section
+      -#    %h1 Categories
+      -#    %ul#pages
+      -#      %li
+      -#        %a{:href => "#"} Category 1...
 
   %footer
     Powered by
