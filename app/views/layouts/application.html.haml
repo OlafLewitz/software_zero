@@ -12,13 +12,16 @@
   %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}/
   %link{:href => "/favicon.png", :rel => "icon"}/
   = stylesheet_link_tag    "application", :media => "all"
+  :css
+    h1, h2, h3, h4, h5, h6 { font-family: #{Env['HEADER_FONT']} !important; }
   = javascript_include_tag "application"
   = csrf_meta_tags
 
   / Fonts from Google"s Web font directory at http://google.com/webfonts
   %link{:href => "http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
   %link{:href => "http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
-  %link{:href => "http://fonts.googleapis.com/css?family=Merienda+One:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
+  - if Env['HEADER_FONT'].present?
+    %link{:href => "http://fonts.googleapis.com/css?family=#{Env['HEADER_FONT'].gsub(' ','+')}:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
 %body{:class => 'no-sidebar'}
   %header{:role => "banner", :onclick => "window.location='#{root_url :host => Env['BASE_DOMAIN'] }';", :style => banner_style}
     %hgroup

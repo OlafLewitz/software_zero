@@ -1,7 +1,7 @@
 module ApplicationHelper
 
   def banner_style
-    "background-image: url(#{banner_image});" if Env['SKIN']
+    "background-image: url(#{banner_image});" if Env['SKIN'].present?
   end
 
   def banner_image
