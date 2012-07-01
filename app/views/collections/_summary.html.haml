@@ -1,6 +1,7 @@
 - port = request.port == 80 ? '' : ":#{request.port}"
 - subdomain = attrs['subdomain'] || raise("No subdomain found for #{name}")
-- link = "#{request.protocol}#{subdomain}.#{Env['BASE_DOMAIN']}#{port}/#{attrs['home_page']}"
+- home_page = attrs['home_page'] || raise("No home page found for #{name}")
+- link = "#{request.protocol}#{subdomain}.#{Env['BASE_DOMAIN']}#{port}/#{home_page}"
 - icon_name = attrs['icon'] || raise("No icon found for #{name}")
 
 .app
