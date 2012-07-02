@@ -1,20 +1,43 @@
 // This File is imported last, and will override other styles in the cascade
 // Add styles here to make changes without digging in too much
 
+
+// Links.  I tried editing the values in _themes.scss without success, so overriding them here : (
+
+$custom-link-color: #b555a4 !default;
+$custom-link-color-hover: adjust-color($custom-link-color, $lightness: 10, $saturation: 25) !default;
+
+a, a:visited, a:active {
+  color: $custom-link-color !important;
+  text-decoration:none;
+}
+
+a:hover {
+  color: $custom-link-color-hover !important;
+  text-decoration:none;
+}
+
+
+$custom-footer-link-color: adjust-color($custom-link-color, $lightness: 5, $saturation: -11);
+$custom-footer-link-color-hover: adjust-color($custom-footer-link-color, $lightness: 10, $saturation: 25) !default;
+
+footer a, footer a:visited, footer a:active {
+  color: $custom-footer-link-color !important;
+}
+
+footer a:hover {
+  color: $custom-footer-link-color-hover !important;
+}
+
+// Other stuff
+
+
 body > header {
   cursor: pointer;
 }
 
 header > hgroup > h1 {
   color: white;
-}
-
-a {
-  color: #919 !important;
-}
-
-footer a {
-  color: #904f90 !important;
 }
 
 .inline-errors {
