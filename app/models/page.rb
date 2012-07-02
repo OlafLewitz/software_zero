@@ -33,7 +33,7 @@ class Page
   end
 
   def save
-    self.class.put_markdown(slug, content, :subdomain => self.class.canonicalize(subdomain))
+    self.class.put_markdown(Env['HOME_SLUG'], content, :subdomain => self.class.canonicalize(subdomain))
   end
 
   def slug
