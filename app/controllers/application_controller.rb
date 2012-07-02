@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
 
   def force_www
     if request.host == Env['BASE_DOMAIN']
-      redirect_to :host => "www.#{request.host}"
+      redirect_to :host => CONFIG.home_domain
     end
   end
 

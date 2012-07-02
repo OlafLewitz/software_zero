@@ -23,7 +23,7 @@
   - if Env['HEADER_FONT'].present?
     %link{:href => "http://fonts.googleapis.com/css?family=#{Env['HEADER_FONT'].gsub(' ','+')}:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
 %body{:class => 'no-sidebar'}
-  %header{:role => "banner", :onclick => "window.location='#{root_url :host => Env['BASE_DOMAIN'] }';", :style => banner_style}
+  %header{:role => "banner", :onclick => "window.location='#{root_url :host => CONFIG.home_domain }';", :style => banner_style}
     %hgroup
       %h1
         = Env['SITE_NAME']
@@ -40,9 +40,9 @@
     -#    %input{:name => "q", :type => "hidden", :value => "site:openyourproject.org"}/
     -#    %input.search{:name => "q", :placeholder => "Search", :results => "0", :type => "text"}/
     %ul.main-navigation
-      %li= link_to 'Home', root_url(:host => Env['BASE_DOMAIN'])
+      %li= link_to 'Home', root_url(:host => CONFIG.home_domain)
       - if Env['CREATE_PAGES']
-        %li= link_to "Create #{Env['COLLECTION_LABEL']}", new_page_url(:host => Env['BASE_DOMAIN'])
+        %li= link_to "Create #{Env['COLLECTION_LABEL']}", new_page_url(:host => CONFIG.home_domain)
   #main
     #content
       %div

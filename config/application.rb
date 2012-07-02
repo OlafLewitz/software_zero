@@ -75,8 +75,9 @@ module OpenYourProject
 
     config.form_pre_filled = false
 
+    config.home_domain = "www.#{Env['BASE_DOMAIN']}"
+
   end
 end
 
 CONFIG = OpenYourProject::Application.config
-
