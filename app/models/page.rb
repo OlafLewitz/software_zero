@@ -37,7 +37,8 @@ class Page
   end
 
   def slug
-    title.slug
+    #title.slug
+    Env['HOME_SLUG']
   end
 
   def subdomain
