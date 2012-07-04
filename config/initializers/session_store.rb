@@ -1,8 +1,9 @@
 # Be sure to restart your server when you modify this file.
 
 OpenYourProject::Application.config.session_store :cookie_store,
-                                                  key: '_open_your_project_session',
-                                                  :expire_after => 60.minutes
+                                                  key: '_software_zero_session',
+                                                  :expire_after => 3.hours,
+                                                  :domain => ".#{Env['BASE_DOMAIN']}"  # cookies should work for all subdomains as well as base domain
 
 # Use the database for sessions instead of the cookie-based default,
 # which shouldn't be used to store highly confidential information

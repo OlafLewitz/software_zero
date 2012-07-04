@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  before_filter :basic_auth
   before_filter :force_www
+  before_filter :allow_or_authorize
 
   def force_www
     if request.host == Env['BASE_DOMAIN']
@@ -9,15 +9,23 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def basic_auth
+  def allow_or_authorize
     if Env['AUTH_USER'].present? && Env['AUTH_PASS'].present?
-      authenticate_or_request_with_http_basic do |username, password|
-        username == Env['AUTH_USER'] && password == Env['AUTH_PASS']
-      end
+      logged_in? || authorize
     end
   end
 
   private
+
+  def authorize
+    session[:logged_in] = authenticate_or_request_with_http_basic do |username, password|
+      username == Env['AUTH_USER'] && password == Env['AUTH_PASS']
+    end
+  end
+
+  def logged_in?
+    session[:logged_in] == true
+  end
 
   def not_found
     raise ActionController::RoutingError.new('Not Found')
