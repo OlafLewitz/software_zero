@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
 
   def allow_or_authorize
     if Env['AUTH_USER'].present? && Env['AUTH_PASS'].present?
-      logged_in? || authorize
+      authorize unless logged_in?
     end
   end
 
