@@ -44,13 +44,13 @@ class PagesController < ApplicationController
 
   def edit
     @slug = params[:id]
-    @title = @slug.gsub('-', ' ')
+    @title = page_title
     @markdown = Page.get_markdown canonical_subdomain, @slug
     not_found unless @markdown
 
     @editor = {
       escaped_name: @slug,
-      page_name: @slug.gsub('-', ' '),
+      page_name: @title,
       page_path: "/pages/#{@slug}",
       content: @markdown,
       footer: false,
@@ -70,6 +70,7 @@ class PagesController < ApplicationController
 
   def show
     @canonical_subdomain = canonical_subdomain
+    @title = page_title
     @page_id = params[:slug]
     @page_html = Page.get_html @canonical_subdomain, @page_id
     not_found unless @page_html
@@ -82,6 +83,10 @@ class PagesController < ApplicationController
   def canonical_subdomain
     subdomain = request.host.sub(/#{Regexp.escape(Env['BASE_DOMAIN'])}$/, '')   # This is "normally" the same as request.subdomain, but works for all TLDs, regardless of how many periods they contain
     Page.canonicalize(subdomain)
+  end
+
+  def page_title
+    canonical_subdomain.split('.').first.gsub('-', ' ').upcase
   end
 
 end
