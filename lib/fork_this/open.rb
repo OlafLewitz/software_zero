@@ -1,5 +1,7 @@
 require 'pismo'
 require 'rest_client'
+require 'html_massage'
+require 'remark'
 
 require_relative '../env'
 require_relative '../core-ext/nil'
