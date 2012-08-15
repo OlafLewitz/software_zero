@@ -100,7 +100,7 @@ class Page
   def self.canonicalize(subdomain)
     segments = subdomain.split('.')
     segments.reject!{|segment| segment == Env['DOMAIN_CONNECTOR']}
-    raise "Expected either 1 or 2 subdomain segments, got #{segments.inspect}" unless segments.size == 1 || segments.size == 2
+    raise "Expected 1 or more subdomain segments, got #{segments.inspect}" unless segments.size >= 1
     segments.join('.')
   end
 
