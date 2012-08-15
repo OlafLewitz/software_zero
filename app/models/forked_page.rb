@@ -12,7 +12,7 @@ class ForkedPage < Page
 
   def initialize(attributes = {})
     attributes[:url] = "http://#{attributes[:url]}" if attributes[:url].present? && attributes[:url] !~ %r{^https?://}
-    attributes[:title] = attributes[:url].domain.slug(:padded_subdomain) if attributes[:url].present?
+    attributes[:title] = attributes[:url].domain if attributes[:url].present?
     super attributes
     @error_message_from_last_connection_attempt = nil
   end

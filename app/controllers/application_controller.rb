@@ -44,8 +44,7 @@ class ApplicationController < ActionController::Base
   end
 
   def canonical_subdomain
-    subdomain = request.host.sub(/#{Regexp.escape(Env['BASE_DOMAIN'])}$/, '')   # This is "normally" the same as request.subdomain, but works for all TLDs, regardless of how many periods they contain
-    Page.canonicalize(subdomain)
+    Page.canonicalize(request.subdomain)
   end
 
 end

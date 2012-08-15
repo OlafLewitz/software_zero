@@ -69,21 +69,29 @@ class PagesController < ApplicationController
   end
 
   def show
-    @canonical_subdomain = canonical_subdomain
-    @origin_message = origin_message
+    @collection ||= canonical_subdomain
+    @origin_message = origin_message @collection
+
     @page_id = params[:slug]
-    @page_html = Page.get_html @canonical_subdomain, @page_id
+    @page_html = Page.get_html @collection, @page_id
     not_found unless @page_html
-    repo_url     = "https://github.com/#{Env['GITHUB_USER']}/#{@canonical_subdomain}"
+
+    repo_url     = "https://github.com/#{Env['GITHUB_USER']}/#{@collection}"
     @fork_this   = %{<a href="#{repo_url}">Fork this #{Env['COLLECTION_LABEL'].downcase}</a> on Github}.html_safe
-    @zipball_url = "https://github.com/#{Env['GITHUB_USER']}/#{@canonical_subdomain}/zipball/master"
+    @zipball_url = "https://github.com/#{Env['GITHUB_USER']}/#{@collection}/zipball/master"
     @full_width = true
+  end
+
+  def via
+    @collection = request.subdomain.gsub /\.via$/, ''
+    show
+    render :show
   end
 
   private
 
-  def origin_message
-    Page.origin_message canonical_subdomain
+  def origin_message domain
+    Page.origin_message domain
   end
 
 end

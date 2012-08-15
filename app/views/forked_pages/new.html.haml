@@ -4,7 +4,7 @@
     %ul
       - @recent_changes.each do |recent_change|
         %li
-          %a{:href => "http://#{recent_change['collection']}.on.#{request.domain}#{request.port_string}/#{recent_change['slug']}"}= "#{recent_change['collection']}/#{recent_change['slug']}"
+          %a{:href => "http://#{recent_change['collection']}.via.#{request.domain}#{request.port_string}/#{recent_change['slug']}"}= "#{recent_change['collection']}/#{recent_change['slug']}"
 
 %ul.overview
   %li

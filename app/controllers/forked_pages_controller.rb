@@ -20,8 +20,6 @@ class ForkedPagesController < ApplicationController
 
     begin
       domain, slug = ForkThis.open(@forked_page.doc, @forked_page.url,
-                                     #:username => @forked_page.username,
-                                     :topic => @forked_page.title,
                                      :domain_connector => Env['DOMAIN_CONNECTOR'],
                                      :shorten_origin_domain => Env['SHORTEN_ORIGIN_DOMAIN']
       )

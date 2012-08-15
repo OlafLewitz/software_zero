@@ -84,11 +84,10 @@ module ForkThis
       name = name.slug(:page)
 
       origin = options[:shorten_origin_domain] ? url_chunks.first : url_chunks.join
-      subject = options[:topic] || origin
+      subject = options[:topic] ? options[:topic].slug(:padded_subdomain) : origin
       connector = options[:domain_connector]
       curator = options[:username]
 
-      subject = subject.slug(:padded_subdomain)
       curator = curator.slug(:padded_subdomain) if curator
 
       subdomain           = [subject, connector, curator].compact.join('.')

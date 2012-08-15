@@ -14,7 +14,10 @@ OpenYourProject::Application.routes.draw do
 
   match 'fake_error' => 'util#fake_error'
 
-  match ':slug' => 'pages#show', :constraints => { :subdomain => /^#{SUBDOMAIN_PATTERN}/, :slug => %r{[^/<>+]*} }
+  if ENV['DOMAIN_CONNECTOR'].present?
+    match ':slug' => 'pages#via', :constraints => { :subdomain => /^(#{DOMAIN_SEGMENT_PATTERN}\.)*#{DOMAIN_SEGMENT_PATTERN}\.#{ENV['DOMAIN_CONNECTOR']}$/, :slug => %r{[^/<>+]*} }
+  end
+  match ':slug' => 'pages#show', :constraints => { :subdomain => /^#{SUBDOMAIN_PATTERN}\.#{SUBDOMAIN_PATTERN}$/, :slug => %r{[^/<>+]*} }
 end
 
 
