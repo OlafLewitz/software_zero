@@ -45,4 +45,9 @@ class String
     massaged
   end
 
+  def domain
+    match = self.match(%r{^\s*https?://(?:www\.)?([^/]+)})
+    (match && match[1]) ? match[1] : ''
+  end
+
 end
