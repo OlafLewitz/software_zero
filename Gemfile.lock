@@ -1,17 +1,10 @@
 GIT
   remote: git://github.com/harlantwood/html_massage.git
-  revision: 457aaaf80f413414175266a79a75b332cd840dba
+  revision: c6847efc067fd4933f898070505decdd450fddd0
   specs:
     html_massage (0.1.1)
       nokogiri (>= 1.4.4)
       sanitize (>= 2.0.0)
-
-GIT
-  remote: git://github.com/harlantwood/remark.git
-  revision: 6d0bfbe48820bd28a42aac352ecd5bd3f26956ae
-  specs:
-    remark (0.3.1)
-      hpricot (~> 0.8.2)
 
 GEM
   remote: https://rubygems.org/
@@ -44,7 +37,7 @@ GEM
       i18n (~> 0.6)
       multi_json (~> 1.0)
     addressable (2.2.8)
-    airbrake (3.1.1)
+    airbrake (3.1.2)
       activesupport
       builder
     anemone (0.7.1)
@@ -109,7 +102,6 @@ GEM
     heroku-api (0.2.1)
       excon (~> 0.13.3)
     hike (1.2.1)
-    hpricot (0.8.6)
     httpauth (0.1)
     i18n (0.6.0)
     journey (1.0.3)
@@ -224,7 +216,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  airbrake
+  airbrake (>= 3.1.2)
   anemone
   awesome_print
   coffee-rails (~> 3.2.1)
@@ -248,7 +240,6 @@ DEPENDENCIES
   rails (= 3.2.3)
   railties
   redcarpet
-  remark!
   rest-client
   rspec
   rspec-core
