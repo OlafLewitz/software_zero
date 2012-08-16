@@ -20,11 +20,27 @@ MAX_LINKS_PER_SITE = (Env['MAX_LINKS_PER_SITE'] || 2).to_i
 Store.set 'GithubStore', File.expand_path("..", File.dirname(__FILE__))
 
 def run
-  raise "Please set the environment variable 'SFW_BASE_DOMAIN'" if Env['SFW_BASE_DOMAIN'].nil? || Env['SFW_BASE_DOMAIN'].empty?
+  #raise "Please set the environment variable 'SFW_BASE_DOMAIN'" if Env['SFW_BASE_DOMAIN'].nil? || Env['SFW_BASE_DOMAIN'].empty?
+
   url = ARGV.first
   if url
-    url = url =~ %r{^https?://} ? url : "http://#{url}"
-    crawl url
+    sites = {}
+    url = "http://#{url}" unless url =~ %r{^https?://}
+    base = url.match(%r{^https?://[^/]+}).to_s
+    start_domain = domain(url).slug(:subdomain)
+    html = RestClient.get url
+    doc = Nokogiri::HTML(html)
+    links = (doc / :a).map { |link| link[:href] }
+    links = links.reject { |link| link.start_with?(base) || link !~ %r{^https?://} }
+    Store.put_struct 'meta/links', links, :collection => start_domain
+    links.each do |link|
+      site_pages = crawl(link)
+      unless site_pages.empty?
+        sites[domain(link)] = site_pages
+        Store.put_struct 'meta/linked_sites', sites, :collection => start_domain
+        Store.put_struct 'meta/linked_sites_d3_viz_format', d3_format(sites), :collection => start_domain
+      end
+    end
   else
     File.readlines('links.txt').each do |line|
       url = line.strip
@@ -33,7 +49,18 @@ def run
   end
 end
 
+def d3_format(sites)
+  sites_d3 = { name: '', children: [] }
+  sites.each do |domain, pages|
+    pages_d3 = pages.map{ |slug, metadata| metadata.merge({name: slug}) }
+    site_d3 = {name: domain, slug: domain.slug(:subdomain), children: pages_d3}
+    sites_d3[:children] << site_d3
+  end
+  sites_d3
+end
+
 def crawl(starting_url)
+  domain = domain(starting_url)
   html = RestClient.get starting_url rescue nil
   doc = Nokogiri::HTML(html)
   if html && !ForkThis.open_license_links(doc).empty?
@@ -44,28 +71,28 @@ def crawl(starting_url)
         sleep rand*4*4
         print '.'
         url = page.url.to_s
-        visited[url] = page.doc  # TODO: if response 200
+        visited[url] = page.doc # TODO: if response 200
         attempted += 1
         if (visited.keys.size >= MAX_LINKS_PER_SITE) || (attempted >= MAX_LINKS_PER_SITE * 3)
-          open_site(visited)
-          return
+          return open_site(visited, domain)
         end
         #sleep rand*8
       end
     end
-    open_site(visited)
+    open_site(visited, domain)
   end
-  puts
 end
 
-def open_site(visited)
+def open_site(visited, domain)
   puts
-  ForkThis.open_site(
+  site_pages = ForkThis.open_site(
     visited,
     :domain_connector => Env['DOMAIN_CONNECTOR'],
     :shorten_origin_domain => Env['SHORTEN_ORIGIN_DOMAIN']
   )
-end
 
+  Store.put_struct 'meta/pages', site_pages, :collection => domain.slug(:subdomain) unless site_pages.empty?
+  site_pages
+end
 
 run()
