@@ -8,5 +8,6 @@
 /log/*.log
 /tmp
 /.env
+/.idea/
 /links*
 /zero/
