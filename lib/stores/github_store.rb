@@ -137,23 +137,17 @@ class GithubStore < Store
     private
 
     def repo_for_reading(metadata)
-      extract_repo(metadata, :subdomain)
+      extract_repo metadata
     end
 
     def repo_for_writing(metadata)
-      extract_repo(metadata, :padded_subdomain)
+      extract_repo metadata
     end
 
-    def extract_repo(metadata, slug_format=nil)
+    def extract_repo(metadata)
       keys = [:repo, :collection]
       keys.each{ |key| return metadata[key] unless metadata[key].empty? }
       raise("Please pass in #{keys.map{|key| "metadata[:#{key}]"}.join(' or ')}")
-
-      #keys = [:repo, :collection]
-      #keys.each{ |key| return metadata[key].slug(slug_format) unless metadata[key].empty? }
-      #keys = [:subdomain]
-      #keys.each{ |key| return metadata[key] unless metadata[key].empty? }
-      #raise("Please pass in #{keys.map{|key| "metadata[:#{key}]"}.join(' or ')}")
     end
 
   end
