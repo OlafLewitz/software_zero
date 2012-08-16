@@ -12,8 +12,9 @@
   %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}/
   %link{:href => "/favicon.png", :rel => "icon"}/
   = stylesheet_link_tag    "application", :media => "all"
-  :css
-    h1, h2, h3, h4, h5, h6 { font-family: #{Env['HEADER_FONT']} !important; }
+  - if Env['HEADER_FONT'].present?
+    :css
+      h1, h2, h3, h4, h5, h6 { font-family: #{Env['HEADER_FONT']} !important; }
   = javascript_include_tag "application"
   = csrf_meta_tags
 
@@ -41,7 +42,8 @@
     -#    %input{:name => "q", :type => "hidden", :value => "site:openyourproject.org"}/
     -#    %input.search{:name => "q", :placeholder => "Search", :results => "0", :type => "text"}/
     %ul.main-navigation
-      %li= link_to 'Home', root_url(:host => CONFIG.home_domain)
+      - unless request.path == root_path
+        %li= link_to 'Home', root_url(:host => CONFIG.home_domain)
       - if Env['CREATE_PAGES']
         %li= link_to "Create #{Env['COLLECTION_LABEL']}", new_page_url(:host => CONFIG.home_domain)
   #main
@@ -55,17 +57,18 @@
 
   %footer
     Powered by
-    = succeed "." do
-      %a{:href => 'http://enlightenedstructure.org/Software_Zero/'} Enlightened Structure Software Zero
-    &nbsp;
+    = succeed "" do
+      %a{:href => 'http://enlightenedstructure.org/Software_Zero/'} Software Zero
+    &nbsp; &bull; &nbsp;
 
-    Design by
+    -if Env['DESIGN_CREDIT'].present? && Env['DESIGN_CREDIT_URL'].present?
+      Design by
+      = succeed "" do
+        %a{:href => Env['DESIGN_CREDIT_URL']}= Env['DESIGN_CREDIT']
+        &nbsp; &bull; &nbsp;
+    Awesome by
     %a{:href => "http://octopress.org/"} Octopress
-    &amp;
-    = succeed "." do
-      %a{:href => "http://www.arisascott.com/"} Arisa Scott
 
   /
-    Env['RACK_ENV'] = #{Env['RACK_ENV'].inspect}
-    Rails.env = #{Rails.env.inspect}
-    Env['CREATE_PAGES'] = #{Env['CREATE_PAGES'].inspect}
+    Env['RACK_ENV'] = "#{Env['RACK_ENV']}"
+    Rails.env = "#{Rails.env}"
