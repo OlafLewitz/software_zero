@@ -6,6 +6,7 @@ class Page
   include ActiveModel::Validations
   include ActiveModel::Conversion
   extend ActiveModel::Naming
+  attr_reader   :errors
 
   attr_accessor :title, :content, :username
 
@@ -16,6 +17,7 @@ class Page
     @attributes.each do |name, value|
       send("#{name}=", value)
     end
+    @errors = ActiveModel::Errors.new(self)
   end
 
   def persisted?
@@ -65,7 +67,26 @@ class Page
 
   def self.put_markdown(slug, markdown, metadata)
     Store.put_text "#{slug}.markdown", markdown, metadata
+    record_update(slug, metadata)
   end
+
+  def self.record_update(slug, metadata)
+    updates = Store.get_struct('updates', :collection => 'meta') || []
+    updates.delete_if{|page| page['collection'] == metadata[:collection] && page['slug'] == slug }
+    updates.unshift({
+        collection: metadata[:collection],
+        slug: slug,
+        updated: Time.now.utc.iso8601
+      })
+    updates.pop if updates.size > Env['MAX_UPDATES'].to_i
+    Store.put_struct 'updates', updates, :collection => 'meta'
+  end
+
+  def self.origin_message(subdomain)
+    original_domain = subdomain.split('.').first.gsub('-', '.')
+    "This is a remixable version of open licensed content from #{original_domain}"
+  end
+
 
   private
 
