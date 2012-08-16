@@ -5,6 +5,7 @@ require 'html_massage'
 require_relative '../env'
 require_relative '../core-ext/nil'
 require_relative '../../config/initializers/string'
+require_relative '../../lib/subdomains'
 require File.dirname(__FILE__) + '/../../lib/html2markdown'
 
 module ForkThis
@@ -12,28 +13,31 @@ module ForkThis
   class NoKnownOpenLicense < RuntimeError;
   end
 
-  SUBDOMAIN_PATTERN = "[a-zA-Z0-9][a-zA-Z0-9-]{0,62}" # Subdomain 'segments' are 1 - 63 characters.  Although technically lower case, URLs may come in as mixed case.
-
   OPEN_LICENSE_PATTERNS = %w[
     gnu.org/licenses
     creativecommons.org/licenses
   ]
 
   class << self
+
     def open_site(data, options={})
+      pages = {}
       urls = data.keys
       data.each do |url, doc|
         sleep rand*4
         begin
-          if fork_url = open(doc, url, options.merge(:site_urls => urls))
+          full_domain, slug, metadata = open(doc, url, options.merge(:site_urls => urls))
+          if full_domain && slug
             puts "Created page -->"
             puts
-            puts fork_url
+            puts "#{full_domain}/#{slug}"
+            pages[slug] = metadata
           end
         rescue ForkThis::NoKnownOpenLicense
           print "no known open license"
         end
       end
+      pages
     end
 
     def open(doc, url, options={})
@@ -62,23 +66,33 @@ module ForkThis
         ^
         https?://
         (?:www\.)?
-        (?:en\.)?
-        (#{SUBDOMAIN_PATTERN})
-        ((?:\.#{SUBDOMAIN_PATTERN})+)?
+        (#{DOMAIN_SEGMENT_PATTERN})
+        ((?:\.#{DOMAIN_SEGMENT_PATTERN})+)?
+        (/.*|)
+        $
       }x).to_a
 
       url_chunks.shift # discard full regexp match
+      name = url_chunks.pop
       origin_domain = url_chunks.join
-      slug = url.slug
 
+      name.gsub!(/#.*$/, '')                     # strip off anchor tags, eg #section-2
+      #name.gsub!(/\?.*$/, '')                    # strip off query sting, eg ?cid=6a0
+      name.gsub!(/\.[[:alnum:]]{3,10}$/, '')     # strip off file extensions, eg .html
+      name.gsub!(%r{^/|/$}, '')                  # strip off leading or trailing slash
+      name = Env['HOME_SLUG'] if name.empty?
+      name = name.slug(:page)
 
       origin = options[:shorten_origin_domain] ? url_chunks.first : url_chunks.join
       subject = options[:topic] || origin
       connector = options[:domain_connector]
-      curator = options[:username] || Env['CURATOR']
+      curator = options[:username]
 
-      subdomain = [subject, connector, curator, connector].compact.map { |segment| segment.slug }.join('.')
-      canonical_subdomain = [subject, curator                    ].map { |segment| segment.slug }.join('.')
+      subject = subject.slug(:padded_subdomain)
+      curator = curator.slug(:padded_subdomain) if curator
+
+      subdomain           = [subject, connector, curator].compact.join('.')
+      canonical_subdomain = [subject,            curator].compact.join('.')
 
       #############
 
@@ -113,10 +127,17 @@ module ForkThis
       ~.strip_lines!
 
       markdown = html2markdown(html)
+      word_count = markdown.split(/[^[[:alnum:]]]+/).size
 
-      Page.put_markdown slug, markdown, :subdomain => canonical_subdomain
+      begin
+        Page.put_markdown name, markdown, :collection => canonical_subdomain
+        sleep (1 + rand)  # be nice to github
+        full_domain = "#{subdomain}.#{Env['BASE_DOMAIN']}"
+        [ full_domain, name, {size: word_count} ]
+      rescue Faraday::Error::TimeoutError
+        nil
+      end
 
-      [ subdomain, slug ]
     end
 
     def html2markdown(html)
@@ -126,7 +147,20 @@ module ForkThis
     end
 
     def massage_html(html, url)
-      HtmlMassage.html html, :source_url => url, :links => :absolute, :images => :absolute
+      HtmlMassage.html html,
+                       :source_url => url,
+                       :links => :absolute,
+                       :images => :absolute,
+                       :exclude => HtmlMassage::DEFAULT_EXCLUDE_OPTIONS + [
+                          # Posterous blog
+                          'div.editbox',
+                          'div.postmeta',
+                          'div.tag-listing',
+                          'div.posterous_tweet_button',
+                          'div.comment-count',
+                          'div.col#secondary',
+
+                        ]
     end
 
     def open_license_links(doc)
@@ -172,7 +206,7 @@ module ForkThis
       links.each do |link|
         if match = link['href'].to_s.match(%r[^.+?#{origin_domain}(?::\d+)?(?<href_path>/.*)$])
           if site_urls.include?(match[0])
-            link_slug = match['href_path'].slug
+            link_slug = match['href_path'].slug(:page)
             link['href'] = link_slug
           end
         end
