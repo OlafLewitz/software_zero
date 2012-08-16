@@ -22,7 +22,8 @@
   %link{:href => "http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
   - if Env['HEADER_FONT'].present?
     %link{:href => "http://fonts.googleapis.com/css?family=#{Env['HEADER_FONT'].gsub(' ','+')}:regular,italic,bold,bolditalic", :rel => "stylesheet", :type => "text/css"}/
-%body{:class => 'no-sidebar'}
+
+%body{:class => ('no-sidebar' if @full_width)}
   %header{:role => "banner", :onclick => "window.location='#{root_url :host => CONFIG.home_domain }';", :style => banner_style}
     %hgroup
       %h1
@@ -49,12 +50,8 @@
         %article
           = yield
 
-      -#%aside.sidebar
-      -#  %section
-      -#    %h1 Categories
-      -#    %ul#pages
-      -#      %li
-      -#        %a{:href => "#"} Category 1...
+      %aside.sidebar
+        = yield :sidebar
 
   %footer
     Powered by
