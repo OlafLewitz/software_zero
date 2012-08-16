@@ -1,5 +1,5 @@
 root = exports ? this
-root.collections_viz = (json_path) ->
+root.collections_viz = (json_path, base_domain_with_connector_and_port) ->
   d3.json json_path, (data) ->
     width = 600
     height = 600
@@ -27,7 +27,12 @@ root.collections_viz = (json_path) ->
 
     node.append("circle")
       .attr("r", (d) -> d.r)
-      .on "click", (d) -> (if d.children then (window.location = d.url) else undefined)
+      .on "click", (d) ->
+        if d.children
+          # subdomain = d.name.replace(/[^A-Za-z0-9-]/g, '-')
+          window.location = "http://#{d.slug}.#{base_domain_with_connector_and_port}/"
+        else
+          undefined
 
     node.filter((d) -> d.children )
       .append("text")
