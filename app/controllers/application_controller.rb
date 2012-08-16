@@ -15,7 +15,23 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  #unless Rails.application.config.consider_all_requests_local
+    rescue_from ActionController::RoutingError, with: :render_404
+  #end
+
   private
+
+  def not_found
+    raise ActionController::RoutingError.new('Not Found')
+  end
+
+  def render_404(_)
+    respond_to do |format|
+      format.html { render file: Rails.root.join('public/404.html'), status: 404 }
+      format.json { render json: {status: 404, message: "Not Found"}, status: 404 }
+      format.all { render nothing: true, status: 404 }
+    end
+  end
 
   def authorize
     session[:logged_in] = authenticate_or_request_with_http_basic do |username, password|
@@ -27,12 +43,9 @@ class ApplicationController < ActionController::Base
     session[:logged_in] == true
   end
 
-  def not_found
-    raise ActionController::RoutingError.new('Not Found')
-  end
-
-  def port
-    request.port == 80 ? '' : ":#{request.port}"
+  def canonical_subdomain
+    subdomain = request.host.sub(/#{Regexp.escape(Env['BASE_DOMAIN'])}$/, '')   # This is "normally" the same as request.subdomain, but works for all TLDs, regardless of how many periods they contain
+    Page.canonicalize(subdomain)
   end
 
 end

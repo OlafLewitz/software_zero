@@ -21,6 +21,19 @@ ul.overview > li {
   margin-bottom: 1em;
 }
 
+ul.overview > li > .more {
+  margin-left: .22em;
+  padding: 0 .33em;
+  font-size: 0.75em;
+  background-color: #eee;
+  border: 1px solid #ddd;
+}
+
+.more > a, .more > a:visited, .more > a:active {
+  color: #9D6C94 !important;
+  text-decoration: none;
+}
+
 input {
   margin-top: .33em;
   -moz-border-radius: 5px;

@@ -75,7 +75,8 @@ module OpenYourProject
 
     config.form_pre_filled = false
 
-    config.home_domain = "www.#{Env['BASE_DOMAIN']}"
+    config.home_subdomain = "www"
+    config.home_domain = "#{config.home_subdomain}.#{Env['BASE_DOMAIN']}"
 
   end
 end

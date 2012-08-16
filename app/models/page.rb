@@ -1,5 +1,5 @@
 require 'active_model'
-require_dependency "stores/github_store"  # reload changes to this file in dev env
+defined?(require_dependency) ? require_dependency("stores/github_store") : require_relative("../../lib/stores/github_store")
 require_relative "../../lib/stores/all"
 
 class Page
@@ -9,8 +9,7 @@ class Page
 
   attr_accessor :title, :content, :username
 
-  validates_length_of :title, :minimum => 8
-  validates_length_of :username, :minimum => 8
+  validates :title, :length => {:minimum => 8}
 
   def initialize(attributes = {})
     @attributes  = attributes
@@ -33,21 +32,16 @@ class Page
   end
 
   def save
-    self.class.put_markdown(Env['HOME_SLUG'], content, :subdomain => self.class.canonicalize(subdomain))
+    self.class.put_markdown(Env['HOME_SLUG'], content, :collection => self.class.canonicalize(subdomain))
   end
 
   def slug
-    #title.slug
+    #title.present? title.slug(:padded_subdomain) : Env['HOME_SLUG']
     Env['HOME_SLUG']
   end
 
   def subdomain
-    "#{title.slug}.#{username.slug}"
-
-    #subject = title.slug
-    #curator = username.slug
-    #connector = Env['DOMAIN_CONNECTOR']
-    #[subject, connector, curator, connector].compact.join('.')
+    "#{title.slug(:padded_subdomain)}.#{username.slug(:padded_subdomain)}"
   end
 
   def self.get_html(subdomain, slug)
@@ -55,9 +49,10 @@ class Page
   end
 
   def self.get_markdown(subdomain, slug)
+    slug = Env['HOME_SLUG'] if slug.empty?
     subdomain = canonicalize(subdomain)
     markdown = begin
-      Store.get_text "#{slug}.markdown", :subdomain => subdomain
+      Store.get_text "#{slug}.markdown", :collection => subdomain
     rescue SocketError, socket_error
       if Rails.env.development?
         "# Sample page\n\n* Point 1\n* Point 2"   # sample text for dev mode offline work

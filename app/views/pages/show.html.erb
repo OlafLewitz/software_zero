@@ -1,15 +1,25 @@
 <%#= link_to 'Remix This', edit_page_path(:id => @page_id) if Env['CREATE_PAGES'] %>
 
-<h1><%= @title %></h1>
+<div class="origin_message">
+  <%= @origin_message %>
+  &bull;
+  <%= @fork_this %>
+</div>
 
 <%= @page_html.html_safe %>
 
-<hr />
-
 <div class="copying">
-  To get your own copy:
-  <ul>
-    <li>Download the <%= Env['COLLECTION_LABEL'] %> as a <a href="<%= @zipball_url %>" rel="nofollow">zip file</a></li>
-    <li>[For geeks only] Git clone URL: <input type="text" spellcheck="false" class="url-field" value="<%= @git_clone_url %>"></li>
-  </ul>
+  <div class="origin_message">
+    <div>
+      &#8688;
+      <%= @fork_this %>
+    </div>
+    <div>
+      &#8688;
+      <a href="<%= @zipball_url %>" rel="nofollow">
+        Download this <%= Env['COLLECTION_LABEL'].downcase %>
+      </a>
+      as a zip file
+    </div>
+  </div>
 </div>

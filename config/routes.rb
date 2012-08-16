@@ -2,15 +2,19 @@ require File.expand_path("../lib/env", File.dirname(__FILE__))
 
 OpenYourProject::Application.routes.draw do
 
-  root :to => 'collections#index'
+  #root :to => 'collections#index' #, :constraints => { :subdomain => /^#{SUBDOMAIN_PATTERN}/ }
+  root :to => 'forked_pages#new'
 
-  resources :collections, :only => %w[ index ]
+  #resources :collections, :only => %w[ index ] #, :constraints => { :subdomain => /^#{SUBDOMAIN_PATTERN}/ }
 
   resources :pages, :only => %w[ new create edit update index ] if Env['CREATE_PAGES']
-  resources :forked_pages, :only => %w[ new create ] if Env['CREATE_PAGES']
+  resources :forked_pages, :only => %w[ new create ]
 
-  match ':slug' => 'pages#show', :constraints => /^[^\s\/<>+]+$/
+  match 'proxy/github/*path.:format' => 'proxies#github', :as => 'github_proxy', :constraints => { :format => :json }
 
+  match 'fake_error' => 'util#fake_error'
+
+  match ':slug' => 'pages#show', :constraints => { :subdomain => /^#{SUBDOMAIN_PATTERN}/, :slug => %r{[^/<>+]*} }
 end
 
 

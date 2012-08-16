@@ -1,48 +1,43 @@
+require_relative "../../lib/gollum"
+require_relative "../../lib/subdomains"
+
 class String
   def strip_lines!
     lines = split( $/ )    # $/ is the current ruby line ending, \n by default
     lines.map!( &:strip )
     processed = lines.join( $/ )
     processed.strip!
-    replace( processed )
+    replace processed
   end
 
-  def slug(options = {})
-    massaged = self.dup
-
-    # Massage path-like segments
-
-    if %r{^https?://.+?(?<path>/.*|)$} =~ massaged
-      massaged = path.to_s                           # discard protocol, domain, port -- just use path
-      massaged = massaged.split('/').reject{|segment| segment.empty?}.last.to_s  # just the last path segment
-      massaged.gsub!(/#.*$/, '')                     # strip off anchor tags, eg #section-2
-      massaged.gsub!(/\?.*$/, '')                    # strip off query sting, eg ?cid=6a0
-      massaged.gsub!(/\.[[:alnum:]]{3,10}$/, '')     # strip off file extensions, eg .html
-
-      home_slug = options['home_slug'] || 'home'
-      massaged = home_slug if massaged.empty?
+  def slug(type)
+    case type
+      when :page
+        page_name_safe
+      when :subdomain
+        subdomain_safe
+      when :padded_subdomain
+        padded_subdomain_safe
+      else
+        raise ArgumentError, "Unknown slug type #{type.inspect}"
     end
+  end
 
-    # Remove single quotes within words, eg O'Malley -> OMalley, or Don't -> Dont
+  def page_name_safe(char_white_sub = '-', char_other_sub = '-')
+    Gollum::Page.cname(self, char_white_sub, char_other_sub)
+  end
 
-    massaged.gsub!(/(?<=[[:alpha:]])'(?=[[:alpha:]])/, '')
-
-    # Replace unsupported chars with 'sep'
-
-    sep = options[:sep] || '-'
-    massaged.downcase!
-    massaged.gsub!(/[^[[:alnum:]]-]+/, sep)
-    unless sep.nil? || sep.empty?
-      re_sep = Regexp.escape(sep)
-      # No more than one of the separator in a row.
-      massaged.gsub!(/#{re_sep}{2,}/, sep)
-      # Remove leading/trailing separator.
-      massaged.gsub!(/^#{re_sep}|#{re_sep}$/, '')
+  def padded_subdomain_safe
+    massaged = subdomain_safe
+    if massaged.size < MINIMUM_SUBDOMAIN_LENGTH
+      massaged << '-' unless massaged.empty?
+      massaged << ( MINIMUM_SUBDOMAIN_LENGTH - massaged.size ).times.map{ (rand*10).floor.to_s }.join
     end
-
-    #print "\n        orig -> #{self}"
-    #print "\n        slug -> #{massaged}"
     massaged
+  end
+
+  def subdomain_safe
+    gsub(/[^[[:alnum:]]-]/, '-').gsub(/^-+/, '')
   end
 
   def domain

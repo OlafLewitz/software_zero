@@ -15,5 +15,21 @@ class Store
       @store_class.send(*args)
     end
 
+    ### GET
+
+    def get_struct(path, metadata={})
+      json = get_text "#{path}.json", metadata
+      JSON.parse json if json && !json.to_s.strip.empty?
+    end
+
+    ### PUT
+
+    def put_struct(path, ruby_data, metadata={})
+      json = JSON.pretty_generate(ruby_data)
+      put_text "#{path}.json", json, metadata
+      ruby_data
+    end
+
   end
+
 end
