@@ -20,7 +20,6 @@ gem 'github_api', '>= 0.6.0'
 gem 'airbrake', '>= 3.1.2'
 gem 'mustache', ">= 0.11.2", "< 1.0.0"  # version used by gollum 1.4.3
 gem 'smt_rails'
-gem 'remark', :git => 'git://github.com/harlantwood/remark.git'
 
 group :development do
   gem 'anemone'

@@ -1,11 +1,11 @@
 require 'pismo'
 require 'rest_client'
 require 'html_massage'
-require 'remark'
 
 require_relative '../env'
 require_relative '../core-ext/nil'
 require_relative '../../config/initializers/string'
+require File.dirname(__FILE__) + '/../../lib/html2markdown'
 
 module ForkThis
 
@@ -120,8 +120,8 @@ module ForkThis
     end
 
     def html2markdown(html)
-      #markdown = HTML2Markdown.new(html).to_s
-      markdown = Remark.new(html).to_markdown
+      markdown = HTML2Markdown.new(html).to_s
+      #markdown = Remark.new(html, :reference_links => false).to_markdown
       markdown
     end
 
