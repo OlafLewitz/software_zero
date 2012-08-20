@@ -1,10 +1,12 @@
 <%#= link_to 'Remix This', edit_page_path(:id => @page_id) if Env['CREATE_PAGES'] %>
 
-<div class="origin_message">
-  <%= @origin_message %>
-  &bull;
-  <%= @fork_this %>
-</div>
+<% if @origin_message %>
+  <div class="origin_message">
+    <%= @origin_message %>
+    &bull;
+    <%= @fork_this %>
+  </div>
+<% end %>
 
 <%= @page_html.html_safe %>
 

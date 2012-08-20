@@ -44,7 +44,6 @@ class PagesController < ApplicationController
 
   def edit
     @slug = params[:id]
-    @origin_message = origin_message
     @markdown = Page.get_markdown canonical_subdomain, @slug
     not_found unless @markdown
 
@@ -70,7 +69,6 @@ class PagesController < ApplicationController
 
   def show
     @collection ||= canonical_subdomain
-    @origin_message = origin_message @collection
 
     @page_id = params[:slug]
     @page_html = Page.get_html @collection, @page_id
@@ -84,6 +82,7 @@ class PagesController < ApplicationController
 
   def via
     @collection = request.subdomain.gsub /\.via$/, ''
+    @origin_message = origin_message @collection
     show
     render :show
   end
