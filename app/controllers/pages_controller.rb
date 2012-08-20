@@ -81,7 +81,7 @@ class PagesController < ApplicationController
   end
 
   def via
-    @collection = request.subdomain.gsub /\.via$/, ''
+    @collection = request.subdomain.gsub /\.#{ENV['DOMAIN_CONNECTOR']}$/, ''
     @origin_message = origin_message @collection
     show
     render :show

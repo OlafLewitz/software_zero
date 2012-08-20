@@ -15,9 +15,11 @@ OpenYourProject::Application.routes.draw do
   match 'fake_error' => 'util#fake_error'
 
   if ENV['DOMAIN_CONNECTOR'].present?
-    match ':slug' => 'pages#via', :constraints => { :subdomain => /^(#{DOMAIN_SEGMENT_PATTERN}\.)*#{DOMAIN_SEGMENT_PATTERN}\.#{ENV['DOMAIN_CONNECTOR']}$/, :slug => %r{[^/<>+]*} }
+    # eg http://p2pfoundation.net.via.forkthecommons.org/Unhosted
+    match ':slug' => 'pages#via', :constraints => { :subdomain => /^(#{DOMAIN_SEGMENT_PATTERN}\.){2,}#{ENV['DOMAIN_CONNECTOR']}$/, :slug => %r{[^/<>+]+} }
   end
-  match ':slug' => 'pages#show', :constraints => { :subdomain => /^#{SUBDOMAIN_PATTERN}\.#{SUBDOMAIN_PATTERN}$/, :slug => %r{[^/<>+]*} }
+  # eg http://friendship-app.acme-behaviors-inc.appstoreforyourhead.com/friendship-app
+  match ':slug' => 'pages#show', :constraints => { :subdomain => /^#{SUBDOMAIN_PATTERN}(\.#{SUBDOMAIN_PATTERN})?$/, :slug => %r{[^/<>+]+} }
 end
 
 
