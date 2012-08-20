@@ -42,7 +42,7 @@
     -#    %input{:name => "q", :type => "hidden", :value => "site:openyourproject.org"}/
     -#    %input.search{:name => "q", :placeholder => "Search", :results => "0", :type => "text"}/
     %ul.main-navigation
-      - unless request.path == root_path
+      - if Env['CREATE_PAGES'] || request.path != root_path
         %li= link_to 'Home', root_url(:host => CONFIG.home_domain)
       - if Env['CREATE_PAGES']
         %li= link_to "Create #{Env['COLLECTION_LABEL']}", new_page_url(:host => CONFIG.home_domain)
