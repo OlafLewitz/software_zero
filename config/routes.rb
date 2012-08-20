@@ -2,12 +2,12 @@ require File.expand_path("../lib/env", File.dirname(__FILE__))
 
 OpenYourProject::Application.routes.draw do
 
-  #root :to => 'collections#index' #, :constraints => { :subdomain => /^#{SUBDOMAIN_PATTERN}/ }
-  root :to => 'forked_pages#new'
+  #root :to => 'collections#index' #, :constraints => { :subdomain => /^#{SUBDOMAIN_PATTERN}/ }  # for visualizing eg a federation
+  root :to => Env['ROOT_ROUTE'] || 'forked_pages#new'
 
   #resources :collections, :only => %w[ index ] #, :constraints => { :subdomain => /^#{SUBDOMAIN_PATTERN}/ }
 
-  resources :pages, :only => %w[ new create edit update index ] if Env['CREATE_PAGES']
+  resources :pages, :only => %w[ new create edit update ] if Env['CREATE_PAGES']
   resources :forked_pages, :only => %w[ new create ]
 
   match 'proxy/github/*path.:format' => 'proxies#github', :as => 'github_proxy', :constraints => { :format => :json }
