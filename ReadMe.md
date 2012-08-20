@@ -74,6 +74,14 @@ Running a rails console
 
     bundle exec foreman run "rails console"
 
+Running rake tasks
+------------------
+
+Sometimes you want to load the environment with Foreman when running a rake task or other command.
+You can do this with 'foreman run', eg:
+
+    bundle exec foreman run rake routes
+
 Heroku Note
 ===========
 
