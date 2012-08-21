@@ -8,6 +8,9 @@
 /log/*.log
 /tmp
 /.env
+/.env.asfyh
+/.env.ftc
+/.env.other
 /.idea/
 /links*
 /zero/
