@@ -82,8 +82,13 @@ You can do this with 'foreman run', eg:
 
     bundle exec foreman run rake routes
 
-Heroku Note
-===========
+Deploying to Heroku
+===================
+
+    bundle exec thor heroku:deploy [heroku app name]
+
+Pushing bulk config updates
+---------------------------
 
 If you deploy these apps to heroku, you may find the heroku-config extension useful for pushing config files:
 
